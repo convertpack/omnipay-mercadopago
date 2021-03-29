@@ -32,6 +32,25 @@ The following gateways are provided by this package:
 For general usage instructions, please see the main [Omnipay](https://github.com/thephpleague/omnipay)
 repository.
 
+### Example
+
+```
+$omnipay = Omnipay::create('MercadoPago');
+
+$omnipay->setAccessToken('{TOKEN}');
+
+// Required define params by transaction captured
+$purchase = [...];
+
+$response = $omnipay->setPurchase($purchase)->send();
+
+if (!$response->isSuccessful()) {
+    Log::info('Error');
+}
+
+return $response;
+```
+
 ## Support
 
 If you are having general issues with Omnipay, we suggest posting on
