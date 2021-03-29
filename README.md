@@ -44,7 +44,7 @@ $purchase = [...];
 
 $response = $omnipay->setPurchase($purchase)->send();
 
-if (!$response->isSuccessFul()) {
+if (!$response->isSuccessful()) {
     Log::info('Error');
 }
 
