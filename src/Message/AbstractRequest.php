@@ -2,6 +2,8 @@
 
 namespace Omnipay\MercadoPago\Message;
 
+use Omnipay\MercadoPago\Item;
+
 abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 {
     protected $liveEndpoint = 'https://api.mercadopago.com';
@@ -76,6 +78,21 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     public function toJSON($data, $options = 0)
     {
         return json_encode($data, $options | 64);
+    }
+
+    /**
+     * Set the items in this order
+     *
+     * @param ItemBag|array $items An array of items in this order
+     * @return $this
+     */
+    public function setItems($items)
+    {
+        if ($items && !$items instanceof Item) {
+            $items = new Item($items);
+        }
+
+        return $this->setParameter('items', $items);
     }
 
 }
