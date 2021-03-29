@@ -14,9 +14,10 @@ class PurchaseRequest extends AbstractRequest
             foreach ($items as $n => $item) {
 
                 $item_array = [];
+                $item_array['id'] = $item->getId();
                 $item_array['title'] = $item->getName();
                 $item_array['description'] = $item->getDescription();
-//                $item_array['category_id'] = $item->getCategoryId();
+                $item_array['picture_url'] = $item->getPictureUrl();
                 $item_array['quantity'] = (int)$item->getQuantity();
                 $item_array['currency_id'] = $this->getCurrency();
                 $item_array['unit_price'] = (double)($this->formatCurrency($item->getPrice()));
@@ -30,33 +31,13 @@ class PurchaseRequest extends AbstractRequest
 
     public function getData()
     {
-        $data = array(
-            "items" => array(
-                array(
-                    'title'       => 'PurchaseTest',
-                    'quantity'    => 1,
-                    'category_id' => 'tickets',
-                    'currency_id' => 'BRL',
-                    'unit_price'  => 10.0
-                )
-            ));
-
         $items = $this->getItemData();
         $external_reference = parent::getData();
         $purchaseObject = [
-            'items'              => $items,
+            'items' => $items,
             'external_reference' => $external_reference,
-            'auto_return'        => 'approved',
-            'back_urls'          => [
-                'success' => $this->getReturnUrl()
-            ],
-            //TODO add option for that
-            'payment_methods'    => [
-                'excluded_payment_types' => [
-                    ["id" => "ticket"],
-                    ["id" => "atm"]
-                ]
-            ]
+            'notification_url' => $this->getNotificationUrl(),
+            'payer' => $this->getPayer()
         ];
         return $purchaseObject;
 
@@ -74,5 +55,3 @@ class PurchaseRequest extends AbstractRequest
     }
 
 }
-
-?>

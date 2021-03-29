@@ -48,30 +48,29 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->getParameter('access_token');
     }
 
-    /**
-     * Get Customer Data
-     *
-     * @return array customer data
-     */
-    public function getCustomer()
-    {
-        return $this->getParameter('customer');
-    }
-
-    /**
-     * Set Customer data
-     *
-     * @param array $value
-     * @return AbstractRequest provides a fluent interface.
-     */
-    public function setCustomer($value)
-    {
-        return $this->setParameter('customer', $value);
-    }
-
     protected function getEndpoint()
     {
         return $this->getTestMode() ? $this->testEndpoint : $this->liveEndpoint;
+    }
+
+    public function setNotificationUrl($value)
+    {
+        return $this->setParameter('notification_url', $value);
+    }
+
+    public function getNotificationUrl()
+    {
+        return $this->getParameter('notification_url');
+    }
+
+    public function setPayer($value)
+    {
+        return $this->setParameter('payer', $value);
+    }
+
+    public function getPayer()
+    {
+        return $this->getParameter('payer');
     }
 
     public function toJSON($data, $options = 0)
