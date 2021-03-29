@@ -13,7 +13,7 @@ to your `composer.json` file:
 ```json
 {
     "require": {
-        "lucassmacedo/omnipay-mercadopago": "~1.1"
+        "convertpack/omnipay-mercadopago": "~1.1"
     }
 }
 ```
