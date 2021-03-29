@@ -21,8 +21,7 @@
         {
             "name": "Emanuel Totem",
             "email": "emanueltotem@gmail.com"
-        },
-
+        }
     ],
     "autoload": {
         "psr-4": { "Omnipay\\MercadoPago\\" : "src/" }
