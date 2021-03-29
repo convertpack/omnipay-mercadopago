@@ -1,18 +1,17 @@
 {
-    "name": "lucassmacedo/omnipay-mercadopago",
+    "name": "convertpack/omnipay-mercadopago",
     "type": "library",
     "description": "MercadoPago gateway for OmniPay",
     "keywords": [
         "mercadopago",
         "mp",
         "gateway",
-        "merchant",
         "omnipay",
         "pay",
         "payment",
-        "PHPeste"
+        "convertpack"
     ],
-    "homepage": "https://github.com/lucassmacedo/omnipay-mercadopago",
+    "homepage": "https://github.com/convertpack/omnipay-mercadopago",
     "license": "MIT",
     "authors": [
         {
