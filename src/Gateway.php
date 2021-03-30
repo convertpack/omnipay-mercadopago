@@ -3,7 +3,6 @@
 namespace Omnipay\MercadoPago;
 
 use Omnipay\Common\AbstractGateway;
-use Omnipay\Common\ItemBag;
 
 class Gateway extends AbstractGateway
 {

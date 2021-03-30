@@ -10,7 +10,7 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
 {
     public function isSuccessful()
     {
-        return false;
+        return $this->data['is_success'];
     }
 
     /**

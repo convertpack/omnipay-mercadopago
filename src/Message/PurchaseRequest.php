@@ -2,8 +2,21 @@
 
 namespace Omnipay\MercadoPago\Message;
 
+use Omnipay\MercadoPago\Item;
+
 class PurchaseRequest extends AbstractRequest
 {
+
+    public function getItems()
+    {
+        $items = [];
+
+        if (isset($this->getParameter('additional_info')['items'])) {
+            $items = $this->getParameter('additional_info')['items'];
+        }
+
+        return $items;
+    }
 
     public function getItemData()
     {
@@ -13,14 +26,12 @@ class PurchaseRequest extends AbstractRequest
         if ($items) {
             foreach ($items as $n => $item) {
 
-                $item_array = [];
-                $item_array['id'] = $item->getId();
-                $item_array['title'] = $item->getName();
-                $item_array['description'] = $item->getDescription();
-                $item_array['picture_url'] = $item->getPictureUrl();
-                $item_array['quantity'] = (int)$item->getQuantity();
-                $item_array['currency_id'] = $this->getCurrency();
-                $item_array['unit_price'] = (double)($this->formatCurrency($item->getPrice()));
+                $item_array['id'] = $item['id'];
+                $item_array['title'] = $item['title'];
+                $item_array['description'] = isset($item['description']) ? $item['description'] : '';
+                $item_array['picture_url'] = $item['picture_url'];
+                $item_array['quantity'] = (int) $item['quantity'];
+                $item_array['unit_price'] = (double)($this->formatCurrency($item['unit_price']));
 
                 array_push($data, $item_array);
             }
@@ -32,20 +43,31 @@ class PurchaseRequest extends AbstractRequest
     public function getData()
     {
         $items = $this->getItemData();
-        $external_reference = parent::getData();
-        $purchaseObject = [
-            'items' => $items,
-            'external_reference' => $external_reference,
-            'notification_url' => $this->getNotificationUrl(),
-            'payer' => $this->getPayer()
-        ];
-        return $purchaseObject;
+        $additionalInfo = $this->getAdditionalInfo();
 
+        $additionalInfo['items'] = $items;
+
+        $purchase = [
+            'additional_info' => $additionalInfo,
+            'date_of_expiration' => $this->getDateOfExpiration(),
+            'external_reference' => $this->getExternalReference(),
+            'notification_url' => $this->getNotificationUrl(),
+            'payment_method_id' => $this->getPaymentMethodId(),
+            'statement_descriptor' => $this->getStatementDescriptor(),
+            'payer' => $this->getPayer(),
+            'transaction_amount' => (double) $this->getAmount()
+        ];
+
+        if ($this->getPaymentMethod() == 'credit_card') {
+            $purchase['token'] = $this->getCard();
+        }
+
+        return $purchase;
     }
 
-    protected function createResponse($data)
+    protected function createResponse($req)
     {
-        return $this->response = new PurchaseResponse($this, $data);
+        return $this->response = new PurchaseResponse($this, $req);
     }
 
     protected function getEndpoint()
