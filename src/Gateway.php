@@ -41,6 +41,18 @@ class Gateway extends AbstractGateway
         return $this->setParameter('grant_type', $value);
     }
 
+    public function setConfig($value)
+    {
+        $this->setParameter('access_token', isset($value['access_token']) ? $value['access_token'] : null);
+        $this->setParameter('client_secret', isset($value['client_secret']) ? $value['client_secret'] : null);
+        return $this;
+    }
+
+    public function getConfig()
+    {
+        return ['access_token' => $this->getParameter('access_token'), 'client_secret' => $this->getParameter('client_secret')];
+    }
+
     public function setAccessToken($value)
     {
         return $this->setParameter('access_token', $value);

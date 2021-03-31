@@ -1,5 +1,5 @@
 {
-    "name": "convertpack/omnipay-mercadopago",
+    "name": "convertpack/omnipay-mercado-pago",
     "type": "library",
     "description": "MercadoPago gateway for OmniPay",
     "keywords": [
@@ -11,13 +11,9 @@
         "payment",
         "convertpack"
     ],
-    "homepage": "https://github.com/convertpack/omnipay-mercadopago",
+    "homepage": "https://github.com/convertpack/omnipay-mercado-pago",
     "license": "MIT",
     "authors": [
-        {
-            "name": "Lucas Macedo",
-            "email": "luuckymacedo@gmail.com"
-        },
         {
             "name": "Emanuel Totem",
             "email": "emanueltotem@gmail.com"

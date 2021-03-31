@@ -2,10 +2,18 @@
 
 namespace Omnipay\MercadoPago\Message;
 
-use Omnipay\MercadoPago\Item;
-
 class PurchaseRequest extends AbstractRequest
 {
+
+    public function setIpAddress($value)
+    {
+        return $this->setParameter('ip_adress', $value);
+    }
+
+    public function getIpAddress()
+    {
+        return $this->getParameter('ip_adress');
+    }
 
     public function getItems()
     {
@@ -47,12 +55,14 @@ class PurchaseRequest extends AbstractRequest
 
         $additionalInfo['items'] = $items;
 
+        $paymentMethod = $this->getPaymentMethod() == 'boleto' ? 'bolbradesco' : $this->getCardBand();
+
         $purchase = [
             'additional_info' => $additionalInfo,
             'date_of_expiration' => $this->getDateOfExpiration(),
             'external_reference' => $this->getExternalReference(),
             'notification_url' => $this->getNotificationUrl(),
-            'payment_method_id' => $this->getPaymentMethodId(),
+            'payment_method_id' => $paymentMethod,
             'statement_descriptor' => $this->getStatementDescriptor(),
             'payer' => $this->getPayer(),
             'transaction_amount' => (double) $this->getAmount()

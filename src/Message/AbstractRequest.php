@@ -3,7 +3,6 @@
 namespace Omnipay\MercadoPago\Message;
 
 use Omnipay\Common\Message\AbstractRequest as MessageAbstractRequest;
-use Omnipay\MercadoPago\Item;
 
 abstract class AbstractRequest extends MessageAbstractRequest
 {
@@ -27,7 +26,7 @@ abstract class AbstractRequest extends MessageAbstractRequest
 
         $isSuccess = true;
 
-        if ($httpRequest->getStatusCode() != 201 || $httpRequest->getStatusCode() != 200) {
+        if (!in_array($httpRequest->getStatusCode(), [201, 200])) {
             $isSuccess = false;
         }
 
@@ -68,14 +67,14 @@ abstract class AbstractRequest extends MessageAbstractRequest
         return $this->getParameter('date_of_expiration');
     }
 
-    public function setPaymentMethodId($value)
+    public function setCardBand($value)
     {
-        return $this->setParameter('payment_method_id', $value);
+        return $this->setParameter('card_band', $value);
     }
 
-    public function getPaymentMethodId()
+    public function getCardBand()
     {
-        return $this->getParameter('payment_method_id');
+        return $this->getParameter('card_band');
     }
 
     public function setAdditionalInfo($value)
