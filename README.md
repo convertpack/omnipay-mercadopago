@@ -7,13 +7,20 @@ processing library for PHP 5.3+. This package implements MercadoPago support for
 
 ## Installation
 
-Omnipay is installed via [Composer](http://getcomposer.org/). To install, simply add it
-to your `composer.json` file:
+Omnipay is installed via [Composer](http://getcomposer.org/). To install, simply:
+
+Run command
+
+`composer require convertpack/omnipay-mercado-pago`
+
+_or_
+
+add it to your `composer.json` file:
 
 ```json
 {
     "require": {
-        "convertpack/omnipay-mercadopago": "~1.1"
+        "convertpack/omnipay-mercado-pago": "~1.1"
     }
 }
 ```
@@ -40,15 +47,36 @@ $omnipay = Omnipay::create('MercadoPago');
 $omnipay->setAccessToken('{TOKEN}');
 
 // Required define params by transaction captured
-$purchase = [...];
+$purchase = [
+    'payer' => [
+       'first_name' => 'Test',
+      'last_name' => 'Test',
+      'phone' => [
+        'area_code': 11,
+        'number => '987654321'
+      ],
+      'address' => []
+     ],
+    'description' => 'Purchase descript...',
+    'notification_url' => 'https://webhook.site/#id',
+    'paymentMethod' => 'boleto',
+    'items' => [
+        [
+            'id' => 1,
+            'title' => 'Product test',
+            'picture_url' => 'https://picsum.photos/400/400',
+            'quantity' => 1,
+            'unit_price' => (double) 8.07
+        ]
+    ],
+    'ip_address' => '127.0.0.1',
+    'statement_descriptor' => 'Company Test purchase',
+    'amount' => (double) 8.07
+];
 
-$response = $omnipay->setPurchase($purchase)->send();
+$response = $omnipay->purchase($purchase)->send();
 
-if (!$response->isSuccessful()) {
-    Log::info('Error');
-}
-
-return $response;
+return $response->getData();
 ```
 
 ## Support
