@@ -17,17 +17,6 @@ class PurchaseRequest extends AbstractRequest
         return $this->getParameter('ip_adress');
     }
 
-    public function getItems()
-    {
-        $items = [];
-
-        if (isset($this->getParameter('additional_info')['items'])) {
-            $items = $this->getParameter('additional_info')['items'];
-        }
-
-        return $items;
-    }
-
     public function getItemData()
     {
         $data = [];
@@ -56,7 +45,7 @@ class PurchaseRequest extends AbstractRequest
 
         $dateOfExpiration = $this->getDateOfExpiration();
 
-        $paymentMethod = $this->getCardBand();
+        $paymentMethod = null;
 
         if ($this->getPaymentMethod() == 'boleto') {
             $paymentMethod = 'bolbradesco';
@@ -68,6 +57,7 @@ class PurchaseRequest extends AbstractRequest
                 'items' => $items,
                 'ip_address' => $this->getIpAddress()
             ],
+            'installments' => (int) $this->getInstallments(),
             'date_of_expiration' => $dateOfExpiration,
             'external_reference' => $this->getExternalReference(),
             'notification_url' => $this->getNotificationUrl(),
@@ -78,7 +68,9 @@ class PurchaseRequest extends AbstractRequest
         ];
 
         if ($this->getPaymentMethod() == 'credit_card') {
-            $purchase['token'] = $this->getCard();
+            $card = $this->getCardToken();
+            $purchase['token'] = $card['token'];
+            $purchase['payment_method_id'] = $card['card_band'];
         }
 
         return $purchase;

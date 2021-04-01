@@ -67,14 +67,34 @@ abstract class AbstractRequest extends MessageAbstractRequest
         return $this->getParameter('date_of_expiration');
     }
 
-    public function setCardBand($value)
+    public function setItems($itemsArray)
     {
-        return $this->setParameter('card_band', $value);
+        return $this->setParameter('items', $itemsArray);
     }
 
-    public function getCardBand()
+    public function getItems()
     {
-        return $this->getParameter('card_band');
+        return $this->getParameter('items');
+    }
+
+    public function setInstallments($value)
+    {
+        return $this->setParameter('installments', $value);
+    }
+
+    public function getInstallments()
+    {
+        return $this->getParameter('installments');
+    }
+
+    public function setCardToken($value)
+    {
+        return $this->setParameter('card_token', $value);
+    }
+
+    public function getCardToken()
+    {
+        return $this->getParameter('card_token');
     }
 
     public function setDescription($value)

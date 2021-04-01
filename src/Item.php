@@ -6,6 +6,7 @@ use Omnipay\Common\Item as BaseItem;
 
 class Item extends BaseItem
 {
+
     public function setId($value)
     {
         return $this->setParameter('id', $value);
@@ -16,6 +17,16 @@ class Item extends BaseItem
         return $this->getParameter('id') ?: '';
     }
 
+    public function setTitle($value)
+    {
+        return $this->setParameter('title', $value);
+    }
+
+    public function getTitle()
+    {
+        return $this->getParameter('title') ?: '';
+    }
+
     public function setPictureUrl($value)
     {
         return $this->setParameter('picture_url', $value);
@@ -24,6 +35,16 @@ class Item extends BaseItem
     public function getPictureUrl()
     {
         return $this->getParameter('picture_url') ?: '';
+    }
+
+    public function setUnitPrice($value)
+    {
+        return $this->setParameter('unit_price', $value);
+    }
+
+    public function getUnitPrice()
+    {
+        return $this->getParameter('unit_price');
     }
 
     public function getCategoryId()
