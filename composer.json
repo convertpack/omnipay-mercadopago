@@ -23,10 +23,10 @@
         "psr-4": { "Omnipay\\MercadoPago\\" : "src/" }
     },
     "require": {
-        "omnipay/common": "^3.0"
+        "omnipay/common": "^3.0",
+        "illuminate/support": "^6|^7|^8"
     },
     "require-dev": {
-        "omnipay/tests": "^3.0",
-        "illuminate/support": "^6.x-dev"
+        "omnipay/tests": "^3.0"
     }
 }
