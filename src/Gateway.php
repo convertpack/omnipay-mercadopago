@@ -3,6 +3,9 @@
 namespace Omnipay\MercadoPago;
 
 use Omnipay\Common\AbstractGateway;
+use Omnipay\MercadoPago\Message\TokenRequest;
+use Omnipay\MercadoPago\Message\PurchaseRequest;
+use Omnipay\MercadoPago\Message\CompletePurchaseRequest;
 
 class Gateway extends AbstractGateway
 {
@@ -83,21 +86,31 @@ class Gateway extends AbstractGateway
         return $this->getParameter('external_reference');
     }
 
-    public function purchase(array $parameters = array())
+    /**
+     * @param  array  $parameters
+     * @return \Omnipay\MercadoPago\Message\PurchaseRequest
+     */
+    public function purchase(array $parameters = [])
     {
-        return $this->createRequest('\Omnipay\MercadoPago\Message\PurchaseRequest', $parameters);
+        return $this->createRequest(PurchaseRequest::class, $parameters);
     }
-    public function requestToken(array $parameters = array())
+
+    /**
+     * @param  array  $parameters
+     * @return \Omnipay\MercadoPago\Message\TokenRequest
+     */
+    public function requestToken(array $parameters = [])
     {
-        return $this->createRequest('\Omnipay\MercadoPago\Message\TokenRequest', $parameters);
+        return $this->createRequest(TokenRequest::class, $parameters);
     }
+
     /**
      * @param  array  $parameters
      * @return \Omnipay\MercadoPago\Message\CompletePurchaseRequest
      */
-    public function completePurchase(array $parameters = array())
+    public function completePurchase(array $parameters = [])
     {
-        return $this->createRequest('\Omnipay\MercadoPago\Message\CompletePurchaseRequest', $parameters);
+        return $this->createRequest(CompletePurchaseRequest::class, $parameters);
     }
 
 }

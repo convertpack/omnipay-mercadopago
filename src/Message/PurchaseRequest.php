@@ -2,6 +2,8 @@
 
 namespace Omnipay\MercadoPago\Message;
 
+use Illuminate\Support\Carbon;
+
 class PurchaseRequest extends AbstractRequest
 {
 
@@ -51,15 +53,22 @@ class PurchaseRequest extends AbstractRequest
     public function getData()
     {
         $items = $this->getItemData();
-        $additionalInfo = $this->getAdditionalInfo();
 
-        $additionalInfo['items'] = $items;
+        $dateOfExpiration = $this->getDateOfExpiration();
 
-        $paymentMethod = $this->getPaymentMethod() == 'boleto' ? 'bolbradesco' : $this->getCardBand();
+        $paymentMethod = $this->getCardBand();
+
+        if ($this->getPaymentMethod() == 'boleto') {
+            $paymentMethod = 'bolbradesco';
+            $dateOfExpiration = Carbon::parse($dateOfExpiration)->format('Y-m-d'). 'T12:00:00.000-0300';
+        } ;
 
         $purchase = [
-            'additional_info' => $additionalInfo,
-            'date_of_expiration' => $this->getDateOfExpiration(),
+            'additional_info' => [
+                'items' => $items,
+                'ip_address' => $this->getIpAddress()
+            ],
+            'date_of_expiration' => $dateOfExpiration,
             'external_reference' => $this->getExternalReference(),
             'notification_url' => $this->getNotificationUrl(),
             'payment_method_id' => $paymentMethod,

@@ -77,6 +77,16 @@ abstract class AbstractRequest extends MessageAbstractRequest
         return $this->getParameter('card_band');
     }
 
+    public function setDescription($value)
+    {
+        return $this->setParameter('description', $value);
+    }
+
+    public function getDescription()
+    {
+        return $this->getParameter('description');
+    }
+
     public function setAdditionalInfo($value)
     {
         return $this->setParameter('additional_info', $value);

@@ -2,8 +2,9 @@
 
 namespace Omnipay\MercadoPago\Message;
 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Config;
 use Omnipay\Common\Message\AbstractResponse;
-
 use Omnipay\Common\Message\RedirectResponseInterface;
 
 class PurchaseResponse extends AbstractResponse implements RedirectResponseInterface
@@ -32,7 +33,7 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
      *
      * @return array
      */
-    public function getMapped(): array
+    public function getResume(): array
     {
         $content = $this->getData();
 
@@ -46,20 +47,20 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
         if ($data['payment_type_id'] == 'ticket') {
             $dateOfExpiration = date('Y-m-d', strtotime($data['date_of_expiration'])) . 'T22:00:00-0300';
 
-            $boletoBarCode = $data['barcode']['content'];
-            $boletoURL = $data['transaction_details']['external_resource_url'];
+            $boletoBarCode = Arr::get($data, 'barcode.content');
+            $boletoURL = Arr::get($data, 'transaction_details.external_resource_url');
         }
 
         return [
-            'provider_id' => (string)$data['id'],
-            'order.installments' => (int)$data['installments'],
-            'order.installments_fee' => $this->getFeeByKey('financing_fee'), // only MP - installments fee
-            'order.gateway_fee' => $this->getFeeByKey('mercadopago_fee'), // only MP - processing fee
-            'payment.detail' => $data['status_detail'],
-            'payment.boleto_barcode' => onlyNumbers(convertITFFebraban($boletoBarCode)),
-            'payment.boleto_url' => $boletoURL,
-            'payment.date_of_expiration' => $dateOfExpiration,
-            'gateway.fee' => $this->getFee($data),
+            'id' => (string) $data['id'],
+            'installments' => (int) $data['installments'],
+            'installments_fee' => $this->getFeeByKey('financing_fee'), // only MP - installments fee
+            'gateway_fee' => $this->getFeeByKey('mercadopago_fee'), // only MP - processing fee
+            'detail' => $data['status_detail'],
+            'boleto_barcode' => $boletoBarCode,
+            'boleto_url' => $boletoURL,
+            'date_of_expiration' => $dateOfExpiration,
+            'fee' => $this->getFee($data),
         ];
     }
 
@@ -67,7 +68,7 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
      *
      *
      * @var String $key
-     * @return mixed
+     * @return int
      */
     public function getFeeByKey(string $key): int
     {
@@ -83,11 +84,11 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
     }
 
     /**
+     * Get the fee
      *
-     *
-     * @return float
+     * @return integer
      */
-    public function getFee(): float
+    public function getFee(): int
     {
         $content = $this->getData();
 
@@ -97,10 +98,19 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
         if($net_received_amount > 0) {
             $fee = ($transaction_amount - $net_received_amount) * 100;
 
-            return (int)$fee;
+            return (int) $fee;
         }
 
         return 0;
+    }
+
+    public function getStatusTransaction()
+    {
+        $status = Arr::get($this->data, 'data.status');
+
+        $paymentStatus = Config::get('omnipay.mercado_pago.payment_status', []);
+
+        return Arr::get($paymentStatus, $status, $status);
     }
 
     public function getRedirectData()
