@@ -24,9 +24,9 @@
     },
     "require": {
         "omnipay/common": "^3.0",
-        "illuminate/support": "^6.x-dev"
     },
     "require-dev": {
-        "omnipay/tests": "^3.0"
+        "omnipay/tests": "^3.0",
+        "illuminate/support": "^6.x-dev"
     }
 }
