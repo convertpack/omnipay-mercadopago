@@ -61,7 +61,7 @@ class PurchaseRequest extends AbstractRequest
         if ($this->getPaymentMethod() == 'boleto') {
             $paymentMethod = 'bolbradesco';
             $dateOfExpiration = Carbon::parse($dateOfExpiration)->format('Y-m-d'). 'T12:00:00.000-0300';
-        } ;
+        }
 
         $purchase = [
             'additional_info' => [
