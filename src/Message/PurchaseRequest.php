@@ -70,7 +70,7 @@ class PurchaseRequest extends AbstractRequest
         if ($this->getPaymentMethod() == 'credit_card') {
             $card = $this->getCardToken();
             $purchase['token'] = $card['token'];
-            $purchase['payment_method_id'] = $card['card_band'];
+            $purchase['payment_method_id'] = $card['card_brand'];
         }
 
         return $purchase;
