@@ -87,14 +87,14 @@ abstract class AbstractRequest extends MessageAbstractRequest
         return $this->getParameter('installments');
     }
 
-    public function setCardToken($value)
+    public function setCard($value)
     {
-        return $this->setParameter('card_token', $value);
+        return $this->setParameter('card', $value);
     }
 
-    public function getCardToken()
+    public function getCard()
     {
-        return $this->getParameter('card_token');
+        return $this->getParameter('card');
     }
 
     public function setDescription($value)
