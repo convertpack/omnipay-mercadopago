@@ -11,6 +11,11 @@ class PurchaseRequest extends AbstractRequest
     const CREDIT_CARD = 'credit_card';
     const BOLETO = 'boleto';
 
+    // Settings
+    const BINARY_MODE = true;
+    const CAMPAIGN_ID = 'convertpack';
+
+    /***/
     public function setIpAddress($value)
     {
         return $this->setParameter('ip_address', $value);
@@ -55,7 +60,7 @@ class PurchaseRequest extends AbstractRequest
         // like VISA, MASTER or AMEX
         $paymentMethodId = null;
         $cardToken = null;
-        // $issuerId = null;
+        $issuerId = null;
 
         if ($paymentMethod === self::BOLETO) {
             $paymentMethodId = 'bolbradesco';
@@ -68,11 +73,12 @@ class PurchaseRequest extends AbstractRequest
             $card = $this->getCard();
             $paymentMethodId = $card['payment_method_id'];
             $cardToken = $card['token'];
-            // $issuerId = $card['issuer_id'];
+            $issuerId = $card['issuer_id'];
         }
 
         $purchase = [
             'payment_method_id' => $paymentMethodId,
+            'issuer_id' => $issuerId,
             'token' => $cardToken,
             'transaction_amount' => (double) $this->getAmount(),
             'installments' => (int) $this->getInstallments(),
@@ -80,11 +86,13 @@ class PurchaseRequest extends AbstractRequest
             'payer' => $this->getPayer(),
             'notification_url' => $this->getNotificationUrl(),
             'statement_descriptor' => $this->getStatementDescriptor(),
-            'external_reference' => $this->getExternalReference(),
+            'external_reference' => $this->getStoreTransactionId(),
             'additional_info' => [
                 'items' => $items,
                 'ip_address' => $this->getIpAddress()
             ],
+            'binary_mode' => self::BINARY_MODE,
+            'campaign_id' => self::CAMPAIGN_ID,
         ];
 
         return $purchase;

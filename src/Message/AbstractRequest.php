@@ -37,14 +37,14 @@ abstract class AbstractRequest extends MessageAbstractRequest
         ]);
     }
 
-    public function setExternalReference($value)
+    public function setStoreTransactionId($value)
     {
-        return $this->setParameter('external_reference', $value);
+        return $this->setParameter('id', $value);
     }
 
-    public function getExternalReference()
+    public function getStoreTransactionId()
     {
-        return $this->getParameter('external_reference');
+        return $this->getParameter('id');
     }
 
     public function setStatementDescriptor($value)
@@ -84,7 +84,13 @@ abstract class AbstractRequest extends MessageAbstractRequest
 
     public function getInstallments()
     {
-        return $this->getParameter('installments');
+        $installments = $this->getParameter('installments');
+
+        if(is_null($installments) || $installments === '') {
+            $installments = 1;
+        }
+
+        return $installments;
     }
 
     public function setCard($value)
