@@ -149,7 +149,25 @@ abstract class AbstractRequest extends MessageAbstractRequest
 
     public function getPayer()
     {
-        return $this->getParameter('payer');
+        // https://www.mercadopago.com.br/developers/pt/reference/payments/_payments/post
+        $payer = $this->getParameter('payer');
+
+        return [
+            // 'entity_type' => null,
+            // 'type' => null,
+            // 'id' => null,
+            'first_name' => $payer['first_name'],
+            'last_name' => $payer['last_name'],
+            'email' => $payer['email'],
+            'identification' => [
+                'type' => $payer['document']['type'],
+                'number' => $payer['document']['number'],
+            ],
+            'phone' => [
+                'area_code' => $payer['phone']['ddi'],
+                'number' => $payer['phone']['number'],
+            ],
+        ];
     }
 
     public function toJSON($data, $options = 0)
