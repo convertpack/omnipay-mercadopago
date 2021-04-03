@@ -53,7 +53,10 @@ class Gateway extends AbstractGateway
 
     public function getConfig()
     {
-        return ['access_token' => $this->getParameter('access_token'), 'client_secret' => $this->getParameter('client_secret')];
+        return [
+            'access_token' => $this->getParameter('access_token'),
+            'client_secret' => $this->getParameter('client_secret')
+        ];
     }
 
     public function setAccessToken($value)
@@ -86,13 +89,65 @@ class Gateway extends AbstractGateway
         return $this->getParameter('external_reference');
     }
 
+    public function parse($parameters)
+    {
+        $paymentMethod = $this->getPaymentMethod();
+        $items = $this->getItemData();
+        $dateOfExpiration = $this->getDateOfExpiration();
+        
+        // Mercado Pago has a strange way of dealing with payment method.
+        // Instead of just `credit_card` or `boleto` - like every other gateway,
+        // they want to know EXACTLY who will be processing this charge,
+        // like VISA, MASTER or AMEX
+        $paymentMethodId = null;
+        $cardToken = null;
+        $issuerId = null;
+
+        if ($paymentMethod === 'boleto') {
+            $paymentMethodId = 'bolbradesco';
+
+            // We expected `2025-12-01` from incoming request
+            // and manually add the time (end of the day)
+            // Be careful with format: time must be `HH:MM:SS.000`
+            $dateOfExpiration = $dateOfExpiration . 'T22:00:00.000-0300';
+        } else if ($paymentMethod == 'credit_card') {
+            $card = $this->getCard();
+            $paymentMethodId = $card['payment_method_id'];
+            $cardToken = $card['token'];
+            $issuerId = $card['issuer_id'];
+        }
+
+        $parameters = [
+            'payment_method_id' => $paymentMethodId,
+            'issuer_id' => $issuerId,
+            'token' => $cardToken,
+            'transaction_amount' => (double) $this->getAmount(),
+            'installments' => (int) $this->getInstallments(),
+            'date_of_expiration' => $dateOfExpiration,
+            'payer' => $this->getPayer(),
+            'notification_url' => $this->getNotificationUrl(),
+            'statement_descriptor' => $this->getStatementDescriptor(),
+            'external_reference' => $this->getStoreTransactionId(),
+            'additional_info' => [
+                'items' => $items,
+                'ip_address' => null, //$this->getIpAddress()
+            ],
+            'binary_mode' => true,
+            'campaign_id' => 'convertpack',
+        ];
+
+        return $parameters;
+    }
+
     /**
      * @param  array  $parameters
      * @return \Omnipay\MercadoPago\Message\PurchaseRequest
      */
     public function purchase(array $parameters = [])
     {
-        return $this->createRequest(PurchaseRequest::class, $parameters);
+        $parsed = $this->parse($parameters);
+        
+        return $this->createRequest(PurchaseRequest::class, $parsed);
     }
 
     /**
