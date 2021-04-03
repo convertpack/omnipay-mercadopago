@@ -54,20 +54,26 @@ class PurchaseRequest extends AbstractRequest
         // they want to know EXACTLY who will be processing this charge,
         // like VISA, MASTER or AMEX
         $paymentMethodId = null;
+        $cardToken = null;
+        // $issuerId = null;
 
         if ($paymentMethod === self::BOLETO) {
             $paymentMethodId = 'bolbradesco';
-            $dateOfExpiration = Carbon::parse($dateOfExpiration)->format('Y-m-d'). 'T21:00:00.000-0300';
+
+            // We expected `2025-12-01` from incoming request
+            // and manually add the time (end of the day)
+            // Be careful with format: time must be `HH:MM:SS.000`
+            $dateOfExpiration = $dateOfExpiration . 'T22:00:00.000-0300';
         } else if ($paymentMethod == self::CREDIT_CARD) {
             $card = $this->getCard();
-
             $paymentMethodId = $card['payment_method_id'];
-            $purchase['token'] = $card['token'];
-            $purchase['issuer_id'] = $card['issuer_id'];
+            $cardToken = $card['token'];
+            // $issuerId = $card['issuer_id'];
         }
 
         $purchase = [
             'payment_method_id' => $paymentMethodId,
+            'token' => $cardToken,
             'transaction_amount' => (double) $this->getAmount(),
             'installments' => (int) $this->getInstallments(),
             'date_of_expiration' => $dateOfExpiration,
