@@ -48,6 +48,10 @@ abstract class AbstractRequest extends MessageAbstractRequest
         ]);
     }
 
+    /*
+     * Statement Descriptor
+     * Identification shown in customers credit card bill
+     */
     public function setStatementDescriptor($value)
     {
         return $this->setParameter('statement_descriptor', $value);
@@ -58,6 +62,10 @@ abstract class AbstractRequest extends MessageAbstractRequest
         return $this->getParameter('statement_descriptor');
     }
 
+    /*
+     * Date of expiration
+     * Useful only for Boleto
+     */
     public function setDateOfExpiration($value)
     {
         return $this->setParameter('date_of_expiration', $value);
@@ -68,6 +76,9 @@ abstract class AbstractRequest extends MessageAbstractRequest
         return $this->getParameter('date_of_expiration');
     }
 
+    /*
+     * Purchased items
+     */
     public function setItems($itemsArray)
     {
         return $this->setParameter('items', $itemsArray);
@@ -75,9 +86,23 @@ abstract class AbstractRequest extends MessageAbstractRequest
 
     public function getItems()
     {
-        return $this->getParameter('items');
+        $items =  $this->getParameter('items');
+
+        return array_map(function ($item) {
+            return [
+                "id" => $item['id'],
+                "title" => $item['name'],
+                "picture_url" => $item['image_url'],
+                "quantity" => $item['unities'],
+                "unit_price" => $item['price'],
+            ];
+        }, $items);
     }
 
+    /*
+     * Payment installments
+     * Useful only for credit card
+     */
     public function setInstallments($value)
     {
         return $this->setParameter('installments', $value);
@@ -94,6 +119,10 @@ abstract class AbstractRequest extends MessageAbstractRequest
         return $installments;
     }
 
+    /*
+     * Credit card data
+     * Object including token, payment_method_id and issuer_id
+     */
     public function setCard($value)
     {
         return $this->setParameter('card', $value);
@@ -104,6 +133,9 @@ abstract class AbstractRequest extends MessageAbstractRequest
         return $this->getParameter('card');
     }
 
+    /*
+     * Purchase description
+     */
     public function setDescription($value)
     {
         return $this->setParameter('description', $value);
@@ -114,6 +146,9 @@ abstract class AbstractRequest extends MessageAbstractRequest
         return $this->getParameter('description');
     }
 
+    /*
+     * Additional info (IP address, etc)
+     */
     public function setAdditionalInfo($value)
     {
         return $this->setParameter('additional_info', $value);
@@ -124,6 +159,9 @@ abstract class AbstractRequest extends MessageAbstractRequest
         return $this->getParameter('additional_info');
     }
 
+    /*
+     * Mercado Pago access token (private key)
+     */
     public function setAccessToken($value)
     {
         return $this->setParameter('access_token', $value);
@@ -134,11 +172,10 @@ abstract class AbstractRequest extends MessageAbstractRequest
         return $this->getParameter('access_token');
     }
 
-    protected function getEndpoint()
-    {
-        return $this->getTestMode() ? $this->testEndpoint : $this->liveEndpoint;
-    }
-
+    /*
+     * Payer data
+     * https://www.mercadopago.com.br/developers/pt/reference/payments/_payments/post
+     */
     public function setPayer($value)
     {
         return $this->setParameter('payer', $value);
@@ -146,7 +183,6 @@ abstract class AbstractRequest extends MessageAbstractRequest
 
     public function getPayer()
     {
-        // https://www.mercadopago.com.br/developers/pt/reference/payments/_payments/post
         $payer = $this->getParameter('payer');
 
         return [
@@ -167,6 +203,17 @@ abstract class AbstractRequest extends MessageAbstractRequest
         ];
     }
 
+    /*
+     * API REST base endpoint
+     */
+    protected function getEndpoint()
+    {
+        return $this->getTestMode() ? $this->testEndpoint : $this->liveEndpoint;
+    }
+
+    /*
+     * General functions
+     */
     public function toJSON($data, $options = 0)
     {
         return json_encode($data, $options | 64);
