@@ -1,7 +1,7 @@
 {
     "name": "convertpack/omnipay-mercado-pago",
     "type": "library",
-    "description": "MercadoPago gateway for OmniPay",
+    "description": "MercadoPago gateway for OmniPay - Laravel",
     "keywords": [
         "mercadopago",
         "mp",
@@ -14,6 +14,10 @@
     "homepage": "https://github.com/convertpack/omnipay-mercado-pago",
     "license": "MIT",
     "authors": [
+        {
+            "name": "Lucas Macedo",
+            "email": "luuckymacedo@gmail.com"
+        },
         {
             "name": "Emanuel Totem",
             "email": "emanueltotem@gmail.com"
