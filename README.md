@@ -20,10 +20,11 @@ The following gateways are provided by this package:
 For general usage instructions, please see the main [Omnipay](https://github.com/thephpleague/omnipay)
 repository.
 
-### Examples
+## Examples
 
-#### Credit card
-```
+### Credit card
+
+```php
 $omnipay = Omnipay::create('MercadoPago');
 
 $omnipay->setAccessToken('{TOKEN}');
@@ -73,8 +74,8 @@ $response = $omnipay->purchase($data)->send();
 return $response->getData();
 ```
 
-#### Boleto
-```
+### Boleto
+```php
 $omnipay = Omnipay::create('MercadoPago');
 
 $omnipay->setAccessToken('{TOKEN}');
