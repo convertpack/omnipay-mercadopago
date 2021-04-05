@@ -45,7 +45,7 @@ class PurchaseRequest extends AbstractRequest
             $issuerId = $card['issuer_id'];
         }
 
-        $purchase = [
+        return [
             'payment_method_id' => $paymentMethodId,
             'issuer_id' => $issuerId,
             'token' => $cardToken,
@@ -63,8 +63,6 @@ class PurchaseRequest extends AbstractRequest
             'binary_mode' => self::BINARY_MODE,
             'campaign_id' => self::CAMPAIGN_ID,
         ];
-
-        return $purchase;
     }
 
     protected function createResponse($req)
