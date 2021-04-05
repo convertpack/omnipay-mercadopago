@@ -37,7 +37,7 @@ $data = [
         'email' => 'johndoe@convertpack.io',
         'phone' => [
             'area_code': '11',
-            'number => '991919191',
+            'number' => '991919191',
         ],
         'document' => [
             'type' => 'CPF',
@@ -50,7 +50,7 @@ $data = [
     'items' => [
         [
             'id' => 'P007EJSMC8',
-            'name' => The Power of Habit - Charles Duhigg',
+            'name' => 'The Power of Habit - Charles Duhigg',
             'image_url' => 'https://cdn.foo.bar/images/P007EJSMC8.png',
             'unities' => 1,
             'price' => 59.90
