@@ -36,34 +36,52 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
     public function getResume(): array
     {
         $content = $this->getData();
-
         $data = $content['data'];
+        
+
+        dd($data);
+
+
+
+        $paymentTypeId = Arr::get($data, 'payment_type_id');
+        $status = Arr::get($data, 'status');
+        
+        $totalAmount = Arr::get($data, 'transaction_details.total_paid_amount');
+        $netAmount = Arr::get($data, 'transaction_details.net_received_amount');
 
         $dateOfExpiration = null;
+        $boletoBarcode = null;
+        $boletoUrl = null;
 
-        $boletoBarCode = null;
-        $boletoURL = null;
+        // Boleto
+        if ($paymentTypeId == 'ticket') {
+            // We standardize the expiration date to 22:00:00-0300
+            $rawDateOfExpiration = Arr::get($data, 'date_of_expiration');
+            $dayOfExpiration = date('Y-m-d', strtotime($rawDateOfExpiration));
+            $dateOfExpiration = $dayOfExpiration . 'T22:00:00-0300';
 
-        // If payment method is 'Boleto'
-        if ($data['payment_type_id'] == 'ticket') {
-            $dateOfExpiration = date('Y-m-d', strtotime($data['date_of_expiration'])) . 'T22:00:00-0300';
+            // We standardize boleto's barcode to the most common format
+            // Originally Mercado Pago sends the ITF format
+            $rawBarcode = Arr::get($data, 'barcode.content'); 
+            $boletoBarcode = $this->convertItfBoleto($rawBarcode);
 
-            $rawBarCode = Arr::get($data, 'barcode.content'); 
-            $boletoBarCode = $this->convertItfBoleto($rawBarCode);
-
-            $boletoURL = Arr::get($data, 'transaction_details.external_resource_url');
+            $boletoUrl = Arr::get($data, 'transaction_details.external_resource_url');
+        }
+        // Credit card
+        else if ($paymentTypeId == 'credit_card') { // FIX
+            
         }
 
         return [
             'provider_id' => (string) $data['id'],
-            'installments' => (int) $data['installments'],
-            'installments_fee' => $this->getFeeByKey('financing_fee'), // only MP - installments fee
-            'gateway_fee' => $this->getFeeByKey('mercadopago_fee'), // only MP - processing fee
-            'detail' => $data['status_detail'],
-            'boleto_barcode' => $boletoBarCode,
-            'boleto_url' => $boletoURL,
+            'installments' => (int) Arr::get($data, 'installments'),
+            'installments_fee' => $this->getSpecificFee('financing_fee'), // only MP - installments fee
+            'gateway_fee' => $this->getSpecificFee('mercadopago_fee'), // only MP - processing fee
+            'detail' => Arr::get($data, 'status_detail'),
+            'boleto_barcode' => $boletoBarcode,
+            'boleto_url' => $boletoUrl,
             'date_of_expiration' => $dateOfExpiration,
-            'fee' => $this->getFee($data),
+            'fee' => $this->getTotalFee(),
         ];
     }
 
@@ -86,11 +104,12 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
      * @var String $key
      * @return int
      */
-    public function getFeeByKey(string $key): int
+    public function getSpecificFee(string $key): int
     {
         $content = $this->getData();
+        $feeArray = $content['data']['fee_details'];
 
-        $fee = array_first($content['data']['fee_details'], fn ($item) => $item['type'] == $key);
+        $fee = array_first($feeArray, fn ($item) => $item['type'] == $key);
 
         if (is_null($fee)) {
             return 0;
@@ -104,15 +123,16 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
      *
      * @return integer
      */
-    public function getFee(): int
+    public function getTotalFee(): int
     {
         $content = $this->getData();
+        $data = $content['data'];
 
-        $transaction_amount = (float) isset($content['transaction_amount']) ? $content['transaction_amount'] : 0;
-        $net_received_amount = (float) isset($content['transaction_details']) && isset($content['transaction_details']['net_received_amount']) ? $content['transaction_details']['net_received_amount'] : 0;
+        $totalAmount = Arr::get($data, 'transaction_details.total_paid_amount');
+        $netAmount = Arr::get($data, 'transaction_details.net_received_amount', 0);
 
-        if($net_received_amount > 0) {
-            $fee = ($transaction_amount - $net_received_amount) * 100;
+        if($netAmount > 0) {
+            $fee = ($totalAmount - $netAmount) * 100;
 
             return (int) $fee;
         }
