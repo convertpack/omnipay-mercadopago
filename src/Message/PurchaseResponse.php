@@ -73,6 +73,19 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
      * @var String $key
      * @return int
      */
+    public function getMessage(): string
+    {
+        $message = Arr::get($this->data, 'data.message', '');
+
+        return $message;
+    }
+
+    /**
+     *
+     *
+     * @var String $key
+     * @return int
+     */
     public function getFeeByKey(string $key): int
     {
         $content = $this->getData();
