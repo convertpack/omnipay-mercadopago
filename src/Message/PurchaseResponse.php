@@ -33,61 +33,75 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
      *
      * @return array
      */
-    public function getResume(): array
+    public function getFormattedData(): array
     {
         $content = $this->getData();
         $data = $content['data'];
+        $transactionReference = (string) $data['id'];
+        //$this->setTransactionReference($transactionReference);
         
 
-        dd($data);
-
-
-
+        
+        //dd($data);
+        
+        
+        $totalAmount = Arr::get($data, 'transaction_details.total_paid_amount', null);
         $paymentTypeId = Arr::get($data, 'payment_type_id');
-        $status = Arr::get($data, 'status');
-        
-        $totalAmount = Arr::get($data, 'transaction_details.total_paid_amount');
-        $netAmount = Arr::get($data, 'transaction_details.net_received_amount');
+        $dateOfExpiration = Arr::get($data, 'date_of_expiration');
 
-        $dateOfExpiration = null;
-        $boletoBarcode = null;
-        $boletoUrl = null;
+        $append = [];
 
         // Boleto
         if ($paymentTypeId == 'ticket') {
             // We standardize the expiration date to 22:00:00-0300
-            $rawDateOfExpiration = Arr::get($data, 'date_of_expiration');
-            $dayOfExpiration = date('Y-m-d', strtotime($rawDateOfExpiration));
+            $dayOfExpiration = date('Y-m-d', strtotime($dateOfExpiration));
             $dateOfExpiration = $dayOfExpiration . 'T22:00:00-0300';
 
             // We standardize boleto's barcode to the most common format
             // Originally Mercado Pago sends the ITF format
             $rawBarcode = Arr::get($data, 'barcode.content'); 
-            $boletoBarcode = $this->convertItfBoleto($rawBarcode);
-
             $boletoUrl = Arr::get($data, 'transaction_details.external_resource_url');
+
+            $append['boleto_barcode'] = $this->convertItfBoleto($rawBarcode);
+            $append['boleto_url'] = $boletoUrl;
         }
         // Credit card
-        else if ($paymentTypeId == 'credit_card') { // FIX
-            
+        else if ($paymentTypeId == 'credit_card') {
+            $append['card_id'] = null;
+            $append['card_last_four'] = null;
         }
 
-        return [
-            'provider_id' => (string) $data['id'],
-            'installments' => (int) Arr::get($data, 'installments'),
-            'installments_fee' => $this->getSpecificFee('financing_fee'), // only MP - installments fee
-            'gateway_fee' => $this->getSpecificFee('mercadopago_fee'), // only MP - processing fee
-            'detail' => Arr::get($data, 'status_detail'),
+        // Net amount
+        $netAmount = Arr::get($data, 'transaction_details.net_received_amount', 0);
+
+        if($netAmount > 0) {
+            $append['net_amount'] = $netAmount * 100;
+        }
+
+        $base = [
+            'transaction_reference' => $transactionReference,
+
             'status' => Arr::get($data, 'status'),
-            'boleto_barcode' => $boletoBarcode,
-            'boleto_url' => $boletoUrl,
+            'detail' => Arr::get($data, 'status_detail'),
+            'installments' => (int) Arr::get($data, 'installments'),
             'date_of_expiration' => $dateOfExpiration,
-            'fee' => $this->getTotalFee(),
+
+            'fees' => [
+                'installments_fees' => $this->getSpecificFee('financing_fee'),
+                'gateway_fees' => $this->getSpecificFee('mercadopago_fee'),
+                'total' => $this->getTotalFee(),
+            ],
+
+            'total_amount' => $totalAmount,
         ];
+
+        $base = array_merge($base, $append);
+        
+        return $base;
     }
 
     /**
-     *
+     * Returns error message
      *
      * @var String $key
      * @return int
@@ -100,7 +114,7 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
     }
 
     /**
-     *
+     * Get a specific fee by key name
      *
      * @var String $key
      * @return int
@@ -120,7 +134,7 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
     }
 
     /**
-     * Get the fee
+     * Get the total charged fee (total amount - net amount)
      *
      * @return integer
      */
@@ -167,30 +181,30 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
      * in ITF format and must be converted
      * to the most common format
      */
-    function convertItfBoleto($code)
+    private function convertItfBoleto($string)
     {
-        $code = preg_replace('/\D/', '', $code);
+        $code = preg_replace('/\D/', '', $string);
 
-        $field1 = substr($code, 0, 4) . substr($code, 19, 1) . '.' . substr($code, 20, 4);
-        $field2 = substr($code, 24, 5) . '.' . substr($code, 24 + 5, 5);
-        $field3 = substr($code, 34, 5) . '.' . substr($code, 34 + 5, 5);
-        $field4 = substr($code, 4, 1); // "Dígito verificador"
-        $field5 = substr($code, 5, 14); // Due date + amount
+        $campo1 = substr($code, 0, 4) . substr($code, 19, 1) . substr($code, 20, 4);
+        $campo2 = substr($code, 24, 5) . substr($code, 24 + 5, 5);
+        $campo3 = substr($code, 34, 5) . substr($code, 34 + 5, 5);
+        $campo4 = substr($code, 4, 1);     // Digito verificador
+        $campo5 = substr($code, 5, 14);    // Vencimento + Valor
 
-        if ($field5 === 0) {
-            $field5 = '000';
+        if ($campo5 === 0) {
+            $campo5 = '000';
         }
+        
+        $code = $campo1 . $this->modulo10($campo1)
+            . $campo2 . $this->modulo10($campo2)
+            . $campo3 . $this->modulo10($campo3)
+            . $campo4
+            . $campo5;
 
-        $newCode = $field1 . modulo10($field1) 
-            . $field2 . modulo10($field2)
-            . $field3 . modulo10($field3)
-            . $field4
-            . $field5;
-
-        return $newCode;
+        return $code;
     }
 
-    function modulo10($number)
+    private function modulo10($number)
     {
         $numero = preg_replace('/\D/', '', $number);
 
