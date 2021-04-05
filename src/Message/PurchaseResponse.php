@@ -78,6 +78,7 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
             'installments_fee' => $this->getSpecificFee('financing_fee'), // only MP - installments fee
             'gateway_fee' => $this->getSpecificFee('mercadopago_fee'), // only MP - processing fee
             'detail' => Arr::get($data, 'status_detail'),
+            'status' => Arr::get($data, 'status'),
             'boleto_barcode' => $boletoBarcode,
             'boleto_url' => $boletoUrl,
             'date_of_expiration' => $dateOfExpiration,
