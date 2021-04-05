@@ -210,10 +210,10 @@ abstract class AbstractRequest extends MessageAbstractRequest
                 'type' => $payer['document']['type'],
                 'number' => $payer['document']['number'],
             ],
-            'phone' => [
-                'area_code' => $payer['phone']['ddi'],
-                'number' => $payer['phone']['number'],
-            ],
+            // 'phone' => [
+            //     'area_code' => $payer['phone']['ddi'],
+            //     'number' => $payer['phone']['number'],
+            // ],
         ];
     }
 

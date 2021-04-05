@@ -13,7 +13,6 @@ class PurchaseRequest extends AbstractRequest
 
     // Settings
     const BINARY_MODE = true;
-    const CAMPAIGN_ID = 'convertpack';
 
     public function getData()
     {
@@ -58,10 +57,9 @@ class PurchaseRequest extends AbstractRequest
             'external_reference' => $this->getTransactionId(),
             'additional_info' => [
                 'items' => $this->getItems(),
-                'ip_address' => $this->getIpAddress()
+                'ip_address' => $this->getIpAddress(),
             ],
             'binary_mode' => self::BINARY_MODE,
-            'campaign_id' => self::CAMPAIGN_ID,
         ];
     }
 
