@@ -15,43 +15,9 @@ class PurchaseRequest extends AbstractRequest
     const BINARY_MODE = true;
     const CAMPAIGN_ID = 'convertpack';
 
-    /***/
-    public function setIpAddress($value)
-    {
-        return $this->setParameter('ip_address', $value);
-    }
-
-    public function getIpAddress()
-    {
-        return $this->getParameter('ip_address');
-    }
-
-    public function getItemData()
-    {
-        $data = [];
-        $items = $this->getItems();
-
-        if ($items) {
-            foreach ($items as $n => $item) {
-
-                $item_array['id'] = $item['id'];
-                $item_array['title'] = $item['title'];
-                $item_array['description'] = isset($item['description']) ? $item['description'] : '';
-                $item_array['picture_url'] = $item['picture_url'];
-                $item_array['quantity'] = (int) $item['quantity'];
-                $item_array['unit_price'] = (double)($this->formatCurrency($item['unit_price']));
-
-                array_push($data, $item_array);
-            }
-        }
-
-        return $data;
-    }
-
     public function getData()
     {
         $paymentMethod = $this->getPaymentMethod();
-        $items = $this->getItemData();
         $dateOfExpiration = $this->getDateOfExpiration();
         
         // Mercado Pago has a strange way of dealing with payment method.
@@ -62,6 +28,7 @@ class PurchaseRequest extends AbstractRequest
         $cardToken = null;
         $issuerId = null;
 
+        // Boleto
         if ($paymentMethod === self::BOLETO) {
             $paymentMethodId = 'bolbradesco';
 
@@ -69,7 +36,9 @@ class PurchaseRequest extends AbstractRequest
             // and manually add the time (end of the day)
             // Be careful with format: time must be `HH:MM:SS.000`
             $dateOfExpiration = $dateOfExpiration . 'T22:00:00.000-0300';
-        } else if ($paymentMethod == self::CREDIT_CARD) {
+        }
+        // Credit card
+        else if ($paymentMethod == self::CREDIT_CARD) {
             $card = $this->getCard();
             $paymentMethodId = $card['payment_method_id'];
             $cardToken = $card['token'];
@@ -88,7 +57,7 @@ class PurchaseRequest extends AbstractRequest
             'statement_descriptor' => $this->getStatementDescriptor(),
             'external_reference' => $this->getTransactionId(),
             'additional_info' => [
-                'items' => $items,
+                'items' => $this->getItems(),
                 'ip_address' => $this->getIpAddress()
             ],
             'binary_mode' => self::BINARY_MODE,

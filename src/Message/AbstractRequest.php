@@ -147,7 +147,8 @@ abstract class AbstractRequest extends MessageAbstractRequest
     }
 
     /*
-     * Additional info (IP address, etc)
+     * Additional info
+     * Will include: IP address and items
      */
     public function setAdditionalInfo($value)
     {
@@ -157,6 +158,19 @@ abstract class AbstractRequest extends MessageAbstractRequest
     public function getAdditionalInfo()
     {
         return $this->getParameter('additional_info');
+    }
+
+    /*
+     * User IP address
+     */
+    public function setIpAddress($value)
+    {
+        return $this->setParameter('ip_address', $value);
+    }
+
+    public function getIpAddress()
+    {
+        return $this->getParameter('ip_address');
     }
 
     /*
