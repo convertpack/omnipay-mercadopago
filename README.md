@@ -29,6 +29,7 @@ $omnipay = Omnipay::create('MercadoPago');
 $omnipay->setAccessToken('{TOKEN}');
 
 $data = [
+    'transaction_id' => 'CPK-1234567890',
     'payer' => [
         'first_name' => 'John',
         'last_name' => 'Doe',
