@@ -1,6 +1,6 @@
-# Omnipay: MercadoPago
+# Omnipay: Mercado Pago
 
-**MercadoPago driver for the Omnipay PHP payment processing library**
+**Mercado Pago driver for the Omnipay PHP payment processing library**
 
 [Omnipay](https://github.com/thephpleague/omnipay) is a framework agnostic, multi-gateway payment
 processing library for PHP 7.4+. This package implements MercadoPago support for Omnipay.
@@ -20,42 +20,75 @@ The following gateways are provided by this package:
 For general usage instructions, please see the main [Omnipay](https://github.com/thephpleague/omnipay)
 repository.
 
-### Example
+### Examples
 
+#### Credit card
 ```
 $omnipay = Omnipay::create('MercadoPago');
 
 $omnipay->setAccessToken('{TOKEN}');
 
-// Required define params by transaction captured
-$purchase = [
+$data = [
     'payer' => [
-       'first_name' => 'Test',
-      'last_name' => 'Test',
-      'phone' => [
-        'area_code': 11,
-        'number => '987654321'
-      ],
-      'address' => []
+        'first_name' => 'John',
+        'last_name' => 'Doe',
+        'email' => 'johndoe@convertpack.io',
+        'phone' => [
+            'area_code': '11',
+            'number => '991919191',
+        ],
+        'document' => [
+            'type' => 'CPF',
+            'number' => '94530794130',
+        ],
      ],
-    'description' => 'Purchase descript...',
-    'notification_url' => 'https://webhook.site/#id',
-    'paymentMethod' => 'boleto',
+    'description' => 'Book purchase: The Power of Habit - Charles Duhigg',
+    'ip_address' => '127.0.0.1',
+    'notify_url' => 'https://api.foo.bar/webhook',
     'items' => [
         [
-            'id' => 1,
-            'title' => 'Product test',
-            'picture_url' => 'https://picsum.photos/400/400',
-            'quantity' => 1,
-            'unit_price' => (double) 8.07
+            'id' => 'P007EJSMC8',
+            'name' => The Power of Habit - Charles Duhigg',
+            'image_url' => 'https://cdn.foo.bar/images/P007EJSMC8.png',
+            'unities' => 1,
+            'price' => 59.90
         ]
     ],
-    'ip_address' => '127.0.0.1',
-    'statement_descriptor' => 'Company Test purchase',
-    'amount' => (double) 8.07
+    'payment_method' => 'credit_card',
+    'card' => [
+        'token' => '1A2B3C4D5E6F7G8H9I0J',
+        'payment_method_id' => 'visa',
+        'issuer_id' => '24',
+    ],
+    'date_of_expiration' => null,
+    'installments' => 6,
+    'statement_descriptor' => 'Super Books Inc.',
+    'amount' => 59.99,
+    
 ];
 
-$response = $omnipay->purchase($purchase)->send();
+$response = $omnipay->purchase($data)->send();
+
+return $response->getData();
+```
+
+#### Boleto
+```
+$omnipay = Omnipay::create('MercadoPago');
+
+$omnipay->setAccessToken('{TOKEN}');
+
+$data = [
+    // ...same that as previous example
+    'payment_method' => 'boleto',
+    'card' => null,
+    'date_of_expiration' => '2025-12-01',
+    'installments' => 1,
+    'statement_descriptor' => 'Super Books Inc.',
+    'amount' => 59.99,
+];
+
+$response = $omnipay->purchase($data)->send();
 
 return $response->getData();
 ```
