@@ -67,15 +67,15 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
         }
         // Credit card
         else if ($paymentTypeId == 'credit_card') {
-            $append['card_id'] = null;
-            $append['card_last_four'] = null;
+            // $append['card_id'] = null;
+            // $append['card_last_four'] = null;
         }
 
         // Net amount
         $netAmount = Arr::get($data, 'transaction_details.net_received_amount', 0);
 
         if($netAmount > 0) {
-            $append['net_amount'] = $netAmount * 100;
+            $append['net_amount'] = (int) ($netAmount * 100);
         }
 
         $base = [
