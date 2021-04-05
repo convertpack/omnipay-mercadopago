@@ -81,7 +81,7 @@ $omnipay = Omnipay::create('MercadoPago');
 $omnipay->setAccessToken('{TOKEN}');
 
 $data = [
-    // ...same that as previous example
+    // ...same data as previous example
     'payment_method' => 'boleto',
     'card' => null,
     'date_of_expiration' => '2025-12-01',
