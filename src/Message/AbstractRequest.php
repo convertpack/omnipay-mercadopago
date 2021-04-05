@@ -6,12 +6,23 @@ use Omnipay\Common\Message\AbstractRequest as MessageAbstractRequest;
 
 abstract class AbstractRequest extends MessageAbstractRequest
 {
-    protected $liveEndpoint = 'https://api.mercadopago.com/v1/';
-    protected $testEndpoint = 'https://api.mercadopago.com/v1/';
+    protected $liveEndpoint = 'https://api.mercadopago.com/v1';
+    protected $testEndpoint = 'https://api.mercadopago.com/v1';
 
     public function sendData($data)
     {
-        $url = $this->liveEndpoint . 'payments?access_token=' . $this->getAccessToken();
+
+
+
+
+        // dd($data);
+        // die();
+
+
+
+
+
+        $url = $this->liveEndpoint . '/payments?access_token=' . $this->getAccessToken();
         $httpRequest = $this->httpClient->request(
             'POST',
             $url,
@@ -35,16 +46,6 @@ abstract class AbstractRequest extends MessageAbstractRequest
             'status_code' => $httpRequest->getStatusCode(),
             'is_success' => $isSuccess
         ]);
-    }
-
-    public function setStoreTransactionId($value)
-    {
-        return $this->setParameter('id', $value);
-    }
-
-    public function getStoreTransactionId()
-    {
-        return $this->getParameter('id');
     }
 
     public function setStatementDescriptor($value)
@@ -136,16 +137,6 @@ abstract class AbstractRequest extends MessageAbstractRequest
     protected function getEndpoint()
     {
         return $this->getTestMode() ? $this->testEndpoint : $this->liveEndpoint;
-    }
-
-    public function setNotificationUrl($value)
-    {
-        return $this->setParameter('notification_url', $value);
-    }
-
-    public function getNotificationUrl()
-    {
-        return $this->getParameter('notification_url');
     }
 
     public function setPayer($value)
