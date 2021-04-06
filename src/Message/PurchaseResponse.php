@@ -47,12 +47,13 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
         
         $totalAmount = Arr::get($data, 'transaction_details.total_paid_amount', null);
         $paymentTypeId = Arr::get($data, 'payment_type_id');
+        $paymentMethodId = Arr::get($data, 'payment_method_id');
         $dateOfExpiration = Arr::get($data, 'date_of_expiration');
 
         $append = [];
 
         // Boleto
-        if ($paymentTypeId == 'ticket') {
+        if ($paymentMethodId === 'bolbradesco' && $paymentTypeId == 'ticket') {
             // We standardize the expiration date to 22:00:00-0300
             $dayOfExpiration = date('Y-m-d', strtotime($dateOfExpiration));
             $dateOfExpiration = $dayOfExpiration . 'T22:00:00-0300';
@@ -69,6 +70,17 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
         else if ($paymentTypeId == 'credit_card') {
             // $append['card_id'] = null;
             // $append['card_last_four'] = null;
+        }
+        // Pix
+        else if ($paymentMethodId === 'pix' && $paymentTypeId == 'bank_transfer') {
+            $pixData = Arr::get($data, 'point_of_interaction.transaction_data');  
+            $pixQrCodeCopyAndPaste = Arr::get($pixData, 'qr_code');  
+            $pixQrCodeBase64 = Arr::get($pixData, 'qr_code_base64');  
+            $pixCollectorName = Arr::get($pixData, 'bank_info.collector.account_holder_name');  
+
+            $append['pix_copy_and_paste'] = $pixQrCodeCopyAndPaste;
+            $append['pix_qr_code_base64'] = $pixQrCodeBase64;
+            $append['pix_collector_name'] = $pixCollectorName;
         }
 
         // Net amount
