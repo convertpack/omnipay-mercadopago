@@ -3,6 +3,7 @@
 namespace Omnipay\MercadoPago;
 
 use Omnipay\Common\AbstractGateway;
+use Omnipay\MercadoPago\Message\ValidateIntegrationRequest;
 use Omnipay\MercadoPago\Message\TokenRequest;
 use Omnipay\MercadoPago\Message\PurchaseRequest;
 use Omnipay\MercadoPago\Message\CompletePurchaseRequest;
@@ -84,6 +85,15 @@ class Gateway extends AbstractGateway
     public function completePurchase(array $parameters = [])
     {
         return $this->createRequest(CompletePurchaseRequest::class, $parameters);
+    }
+
+    /**
+     * @param  array  $parameters
+     * @return \Omnipay\MercadoPago\Message\ValidateIntegrationRequest
+     */
+    public function validateIntegration(array $parameters = [])
+    {
+        return $this->createRequest(ValidateIntegrationRequest::class, $parameters);
     }
 
 }
