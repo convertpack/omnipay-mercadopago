@@ -2,13 +2,16 @@
 
 namespace Omnipay\MercadoPago\Message;
 
-class ValidateIntegrationRequest extends AbstractRequest
+class ValidateCredentialsRequest extends AbstractRequest
 {
     protected $liveEndpoint = 'https://api.mercadopago.com/v1/';
-    /** @var this option is unavailable */
     protected $testEndpoint = 'https://api.mercadopago.com/v1/';
 
-
+    /*
+     * We use `identification_types` route because
+     * it needs authentication, but doesn't return
+     * any sensitive information
+     */
     public function sendData($data)
     {
         $url = $this->getEndpoint() . "identification_types?access_token=" . $this->getAccessToken();
@@ -44,7 +47,7 @@ class ValidateIntegrationRequest extends AbstractRequest
 
     protected function createResponse($data)
     {
-        return $this->response = new ValidateIntegrationResponse($this, $data);
+        return $this->response = new ValidateCredentialsResponse($this, $data);
     }
 
 }

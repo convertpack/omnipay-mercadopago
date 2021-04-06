@@ -8,7 +8,7 @@ use Omnipay\Common\Message\AbstractResponse;
 /**
  * Complete Payment Response
  */
-class ValidateIntegrationResponse extends AbstractResponse
+class ValidateCredentialsResponse extends AbstractResponse
 {
     /*
      * Is this complete purchase response successful? Return true if status is approved
