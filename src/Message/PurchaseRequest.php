@@ -18,7 +18,7 @@ class PurchaseRequest extends AbstractRequest
     {
         $paymentMethod = $this->getPaymentMethod();
         $dateOfExpiration = $this->getDateOfExpiration();
-        
+
         // Mercado Pago has a strange way of dealing with payment method.
         // Instead of just `credit_card` or `boleto` - like every other gateway,
         // they want to know EXACTLY who will be processing this charge,
@@ -63,6 +63,11 @@ class PurchaseRequest extends AbstractRequest
         ];
     }
 
+    public function getHttpMethod(): string
+    {
+        return 'POST';
+    }
+
     protected function createResponse($req)
     {
         return $this->response = new PurchaseResponse($this, $req);
@@ -70,7 +75,7 @@ class PurchaseRequest extends AbstractRequest
 
     protected function getEndpoint()
     {
-        return $this->getTestMode() ? ($this->testEndpoint . '/checkout/preferences') : ($this->liveEndpoint . '/checkout/preferences');
+        return $this->getTestMode() ? ($this->testEndpoint . '/payments') : ($this->liveEndpoint . '/payments');
     }
 
 }

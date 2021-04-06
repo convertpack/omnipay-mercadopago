@@ -6,25 +6,14 @@ use Omnipay\Common\Message\AbstractRequest as MessageAbstractRequest;
 
 abstract class AbstractRequest extends MessageAbstractRequest
 {
-    protected $liveEndpoint = 'https://api.mercadopago.com/v1';
-    protected $testEndpoint = 'https://api.mercadopago.com/v1';
+    protected $liveEndpoint = 'https://api.mercadopago.com/v1/';
+    protected $testEndpoint = 'https://api.mercadopago.com/v1/';
 
     public function sendData($data)
     {
-
-
-
-
-        // dd($data);
-        // die();
-
-
-
-
-
-        $url = $this->liveEndpoint . '/payments?access_token=' . $this->getAccessToken();
+        $url = $this->getEndpoint().'?access_token=' . $this->getAccessToken();
         $httpRequest = $this->httpClient->request(
-            'POST',
+            $this->getHttpMethod(),
             $url,
             [
                 'Content-type' => 'application/json',
@@ -47,6 +36,15 @@ abstract class AbstractRequest extends MessageAbstractRequest
             'is_success' => $isSuccess
         ]);
     }
+
+    /**
+     * Get HTTP Method.
+     *
+     * This is nearly always POST but can be over-ridden in sub classes.
+     *
+     * @return string
+     */
+    abstract function getHttpMethod(): string;
 
     /*
      * Statement Descriptor
