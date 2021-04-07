@@ -57,9 +57,9 @@ class AbstractResponse extends BaseAbstractResponse
             $pixQrCodeBase64 = Arr::get($pixData, 'qr_code_base64');
             $pixCollectorName = Arr::get($pixData, 'bank_info.collector.account_holder_name');
 
-            $append['pix_copy_and_paste'] = $pixQrCodeCopyAndPaste;
-            $append['pix_qr_code_base64'] = $pixQrCodeBase64;
+            $append['pix_code'] = $pixQrCodeCopyAndPaste;
             $append['pix_collector_name'] = $pixCollectorName;
+            //$append['pix_qr_code_base64'] = $pixQrCodeBase64;
         }
 
         // Net amount
