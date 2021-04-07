@@ -7,7 +7,7 @@ class FetchPurchaseRequest extends AbstractRequest
 
     public function getData()
     {
-        $this->validate('transactionReference');
+        $this->validate('transaction_reference');
 
         return $this->getTransactionReference();
     }
@@ -24,7 +24,9 @@ class FetchPurchaseRequest extends AbstractRequest
 
     protected function getEndpoint()
     {
-        return $this->getTestMode() ? ($this->testEndpoint . 'payments/' . $this->getData()) : ($this->liveEndpoint . 'payments/' . $this->getData());
+        $base = $this->getTestMode() ? $this->testEndpoint : $this->liveEndpoint;
+        $route = 'payments/' . $this->getData();
+        return $base . $route;
     }
 
 }
