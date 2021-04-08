@@ -7,7 +7,7 @@ class FetchPurchaseRequest extends AbstractRequest
 
     public function getData()
     {
-        $this->validate('transaction_reference');
+        $this->validate('transactionReference');
 
         return $this->getTransactionReference();
     }
