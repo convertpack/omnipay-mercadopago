@@ -10,6 +10,7 @@ class PurchaseRequest extends AbstractRequest
     // data comes in different names
     const CREDIT_CARD = 'credit_card';
     const BOLETO = 'boleto';
+    const PIX = 'pix';
 
     // Settings
     const BINARY_MODE = true;
@@ -27,17 +28,38 @@ class PurchaseRequest extends AbstractRequest
         $cardToken = null;
         $issuerId = null;
 
-        // Boleto
+        /*
+         * Boleto
+         */
         if ($paymentMethod === self::BOLETO) {
             $paymentMethodId = 'bolbradesco';
 
-            // We expected `2025-12-01` from incoming request
-            // and manually add the time (end of the day)
-            // Be careful with format: time must be `HH:MM:SS.000`
-            $dateOfExpiration = $dateOfExpiration . 'T22:00:00.000-0300';
+            // We expected a ISO 8601 datetime like `2025-12-01T10:15:50-03:00`
+            // But Mercado Pago expects a datetime with milliseconds.
+            // Example: `2025-12-01T10:15:50.0000-03:00`
+            // So we must transform it and manually change the
+            // time to the end of the day.
+            $datetime = substr($dateOfExpiration, 0, 10); // 2025-12-01
+            $dateOfExpiration = $datetime . 'T22:00:00.000-0300';
         }
-        // Credit card
-        else if ($paymentMethod == self::CREDIT_CARD) {
+        /*
+         * Pix
+         */
+        else if ($paymentMethod === self::PIX) {
+            $paymentMethodId = 'pix';
+
+            // We expected a ISO 8601 datetime like `2025-12-01T10:15:50-03:00`
+            // But Mercado Pago expects a datetime with milliseconds.
+            // Example: `2025-12-01T10:15:50.0000-03:00`
+            // So we must transform it...
+            $datetime = substr($dateOfExpiration, 0, 19); // 2025-12-01T10:15:50
+            $timezone = substr($dateOfExpiration, -6); // -03:00
+            $dateOfExpiration = $datetime . '.000' . $timezone;
+        }
+        /*
+         * Credit card
+         */
+        else if ($paymentMethod === self::CREDIT_CARD) {
             $card = $this->getCard();
             $paymentMethodId = $card['payment_method_id'];
             $cardToken = $card['token'];

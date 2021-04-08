@@ -31,7 +31,9 @@ class AbstractResponse extends BaseAbstractResponse
 
         $append = [];
 
-        // Boleto
+        /*
+         * Boleto
+         */
         if ($paymentMethodId === 'bolbradesco' && $paymentTypeId == 'ticket') {
             // We standardize the expiration date to 22:00:00-0300
             $dayOfExpiration = date('Y-m-d', strtotime($dateOfExpiration));
@@ -45,21 +47,25 @@ class AbstractResponse extends BaseAbstractResponse
             $append['boleto_barcode'] = $this->convertItfBoleto($rawBarcode);
             $append['boleto_url'] = $boletoUrl;
         }
-        // Credit card
-        else if ($paymentTypeId == 'credit_card') {
-            // $append['card_id'] = null;
-            // $append['card_last_four'] = null;
-        }
-        // Pix
-        else if ($paymentMethodId === 'pix' && $paymentTypeId == 'bank_transfer') {
+        /*
+         * Pix
+         */
+        else if ($paymentMethodId === 'pix' && $paymentTypeId === 'bank_transfer') {
             $pixData = Arr::get($data, 'point_of_interaction.transaction_data');
-            $pixQrCodeCopyAndPaste = Arr::get($pixData, 'qr_code');
+            $pixCode = Arr::get($pixData, 'qr_code');
             $pixQrCodeBase64 = Arr::get($pixData, 'qr_code_base64');
             $pixCollectorName = Arr::get($pixData, 'bank_info.collector.account_holder_name');
 
-            $append['pix_code'] = $pixQrCodeCopyAndPaste;
+            $append['pix_code'] = $pixCode;
             $append['pix_collector_name'] = $pixCollectorName;
             //$append['pix_qr_code_base64'] = $pixQrCodeBase64;
+        }
+        /*
+         * Credit card
+         */
+        else if ($paymentTypeId == 'credit_card') {
+            // $append['card_id'] = null;
+            // $append['card_last_four'] = null;
         }
 
         // Net amount
