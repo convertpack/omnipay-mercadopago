@@ -8,11 +8,11 @@ class FetchPurchaseResponse extends AbstractResponse
 {
     public function getTransactionStatus()
     {
-        return Arr::get($this->data, 'status');
+        return Arr::get($this->data, 'data.status');
     }
 
     public function getTransactionStatusDetail()
     {
-        return Arr::get($this->data, 'status_detail');
+        return Arr::get($this->data, 'data.status_detail');
     }
 }
