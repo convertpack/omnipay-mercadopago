@@ -2,6 +2,8 @@
 
 namespace Omnipay\MercadoPago\Message;
 
+use Carbon\Carbon;
+use Illuminate\Support\Arr;
 use Omnipay\Common\Message\AbstractRequest as MessageAbstractRequest;
 
 abstract class AbstractRequest extends MessageAbstractRequest
@@ -195,24 +197,40 @@ abstract class AbstractRequest extends MessageAbstractRequest
 
     public function getPayer()
     {
-        $payer = $this->getParameter('payer');
+        return $this->getParameter('payer');
+    }
 
-        return [
-            // 'entity_type' => null,
-            // 'type' => null,
-            // 'id' => null,
-            'first_name' => $payer['first_name'],
-            'last_name' => $payer['last_name'],
-            'email' => $payer['email'],
-            'identification' => [
-                'type' => $payer['document']['type'],
-                'number' => $payer['document']['number'],
-            ],
-            // 'phone' => [
-            //     'area_code' => $payer['phone']['ddi'],
-            //     'number' => $payer['phone']['number'],
-            // ],
+    public function getPayerFormatted()
+    {
+        $payer = $this->getPayer();
+
+        $data = [
+            "email" => Arr::get($payer, 'email', ''),
+            "first_name" => Arr::get($payer, 'first_name', ''),
+            "last_name" => Arr::get($payer, 'last_name', ''),
+            "date_registered" => Carbon::now()
         ];
+
+        if ($phone = Arr::get($payer, 'phone')) {
+            $data["phone"] = [
+                "area_code" => Arr::get($phone, 'ddi', ''),
+                "number" => Arr::get($phone, 'number', '')
+            ];
+        }
+
+        if ($document = Arr::get($payer, 'document')) {
+            $data["identification"] = $document;
+        }
+
+        if ($address = Arr::get($payer, 'address')) {
+            $data['address'] = [
+                "zip_code" => Arr::get($address, 'zip_code'),
+                "street_name" => Arr::get($address, 'street_name'),
+                "street_number" => Arr::get($address, 'street_number'),
+            ];
+        }
+        
+        return $data;
     }
 
     /*

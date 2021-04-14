@@ -95,6 +95,12 @@ $response = $omnipay->purchase($data)->send();
 return $response->getData();
 ```
 
+## Tests
+
+How to run tests
+
+`php ./vendor/bin/phpunit`
+
 ## Support
 
 If you are having general issues with Omnipay, we suggest posting on

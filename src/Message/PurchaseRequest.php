@@ -73,7 +73,7 @@ class PurchaseRequest extends AbstractRequest
             'transaction_amount' => (double) $this->getAmount(),
             'installments' => (int) $this->getInstallments(),
             'date_of_expiration' => $dateOfExpiration,
-            'payer' => $this->getPayer(),
+            'payer' => $this->getPayerFormatted(),
             'notification_url' => $this->getNotifyUrl(),
             'statement_descriptor' => $this->getStatementDescriptor(),
             'external_reference' => $this->getTransactionId(),

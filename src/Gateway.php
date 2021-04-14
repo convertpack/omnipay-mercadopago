@@ -7,6 +7,7 @@ use Omnipay\MercadoPago\Message\ValidateCredentialsRequest;
 use Omnipay\MercadoPago\Message\PurchaseRequest;
 use Omnipay\MercadoPago\Message\FetchPurchaseRequest;
 use Omnipay\MercadoPago\Message\CancelPurchaseRequest;
+use Omnipay\MercadoPago\Message\CreateCustomerRequest;
 
 class Gateway extends AbstractGateway
 {
@@ -62,11 +63,12 @@ class Gateway extends AbstractGateway
 
     /**
      * @param  array  $parameters
-     * @return \Omnipay\MercadoPago\Message\PurchaseRequest
+     * @return \Omnipay\MercadoPago\Message\CreateCustomerRequest
      */
-    public function purchase(array $parameters = [])
+    public function createCustomer(array $parameters = [])
     {
-        return $this->createRequest(PurchaseRequest::class, $parameters);
+        return $this->createRequest(CreateCustomerRequest::class, $parameters);
+    }
     }
 
     /**
@@ -80,11 +82,11 @@ class Gateway extends AbstractGateway
 
     /**
      * @param  array  $parameters
-     * @return \Omnipay\MercadoPago\Message\CompletePurchaseRequest
+     * @return \Omnipay\MercadoPago\Message\PurchaseRequest
      */
-    public function completePurchase(array $parameters = [])
+    public function purchase(array $parameters = [])
     {
-        return $this->createRequest(CompletePurchaseRequest::class, $parameters);
+        return $this->createRequest(PurchaseRequest::class, $parameters);
     }
 
     /**
