@@ -71,7 +71,11 @@ $data = [
 
 $response = $omnipay->purchase($data)->send();
 
-return $response->getData();
+if ($response->isSuccessful()) {
+    return $response->getData();
+}
+
+return $response->getMessage();
 ```
 
 ### Boleto
@@ -92,9 +96,81 @@ $data = [
 
 $response = $omnipay->purchase($data)->send();
 
-return $response->getData();
+if ($response->isSuccessful()) {
+    return $response->getData();
+}
+
+return $response->getMessage();
 ```
 
+### Create Customer
+
+```php
+$omnipay = Omnipay::create('MercadoPago');
+
+$omnipay->setAccessToken('{TOKEN}');
+
+$data = [
+    'payer' => [
+        'email' => 'jhon@doe.com',
+        'first_name' => 'Jhon',
+        'last_name' => 'Doe',
+        'phone' => [
+            'ddi' => '55',
+            'number' => '991234567',
+        ],
+        'document' => [
+            'type' => 'CPF',
+            'number' => '12345678900',
+        ],
+        'address' => [
+            'zip_code' => '01234567',
+            'street_name' => 'Rua Exemplo',
+            'street_number' => '123 A',
+        ]
+     ]
+];
+
+$response = $omnipay->createCustomer($data)->send();
+
+if ($response->isSuccessful()) {
+    return $response->getData();
+}
+
+return $response->getMessage();
+```
+
+### Fetch Customer
+
+```php
+$omnipay = Omnipay::create('MercadoPago');
+
+$omnipay->setAccessToken('{TOKEN}');
+
+$response = $omnipay->createCustomer(['email' => 'jhon@doe.com'])->send();
+
+if ($response->isSuccessful()) {
+    return $response->getData();
+}
+
+return $response->getMessage();
+```
+
+### Create Card
+
+```php
+$omnipay = Omnipay::create('MercadoPago');
+
+$omnipay->setAccessToken('{TOKEN}');
+
+$response = $omnipay->createCard(['payer_id' => '1562188766852', 'card_token' => '9b2d63e00d66a8c721607214ceda233a'])->send();
+
+if ($response->isSuccessful()) {
+    return $response->getData();
+}
+
+return $response->getMessage();
+```
 ## Tests
 
 How to run tests
