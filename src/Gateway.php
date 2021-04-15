@@ -11,6 +11,7 @@ use Omnipay\MercadoPago\Message\FindCustomerRequest;
 use Omnipay\MercadoPago\Message\CancelPurchaseRequest;
 use Omnipay\MercadoPago\Message\CreateCustomerRequest;
 use Omnipay\MercadoPago\Message\CreateCardRequest;
+use Omnipay\MercadoPago\Message\FindOrCreateCustomerRequest;
 
 class Gateway extends AbstractGateway
 {
@@ -82,6 +83,13 @@ class Gateway extends AbstractGateway
         return $this->createRequest(FindCustomerRequest::class, $parameters);
     }
 
+    /**
+     * @param  array  $parameters
+     * @return \Omnipay\MercadoPago\Message\FindOrCreateCustomerRequest
+     */
+    public function findOrCreateCustomer(array $parameters = [])
+    {
+        return $this->createRequest(FindOrCreateCustomerRequest::class, $parameters);
     }
 
     /**

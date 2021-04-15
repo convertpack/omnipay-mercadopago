@@ -6,6 +6,7 @@ use Illuminate\Support\Arr;
 use Omnipay\MercadoPago\Message\CreateCardResponse;
 use Omnipay\MercadoPago\Message\CreateCustomerResponse;
 use Omnipay\MercadoPago\Message\FindCustomerResponse;
+use Omnipay\MercadoPago\Message\FindOrCreateCustomerResponse;
 use Omnipay\MercadoPago\Message\PurchaseResponse;
 use Omnipay\Tests\GatewayTestCase;
 
@@ -73,13 +74,13 @@ class GatewayTest extends GatewayTestCase
         $this->assertTrue($response->isSuccessful());
     }
 
-    // public function testFindOrCreateCustomer()
-    // {
-    //     $response = $this->gateway->findOrCreateCustomer(['payer' => $this->payer])->send();
+    public function testFindOrCreateCustomer()
+    {
+        $response = $this->gateway->findOrCreateCustomer(['payer' => $this->payer])->send();
         
-    //     // $this->assertInstanceOf(FindCustomerResponse::class, $response);
-    //     $this->assertTrue($response->isSuccessful());
-    // }
+        $this->assertInstanceOf(FindOrCreateCustomerResponse::class, $response);
+        $this->assertTrue($response->isSuccessful());
+    }
 
     public function testCreateCard()
     {
