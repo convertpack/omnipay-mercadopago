@@ -140,6 +140,43 @@ if ($response->isSuccessful()) {
 return $response->getMessage();
 ```
 
+### Find or Create Customer
+
+```php
+$omnipay = Omnipay::create('MercadoPago');
+
+$omnipay->setAccessToken('{TOKEN}');
+
+$data = [
+    'payer' => [
+        'email' => 'jhon@doe.com',
+        'first_name' => 'Jhon',
+        'last_name' => 'Doe',
+        'phone' => [
+            'ddi' => '55',
+            'number' => '991234567',
+        ],
+        'document' => [
+            'type' => 'CPF',
+            'number' => '12345678900',
+        ],
+        'address' => [
+            'zip_code' => '01234567',
+            'street_name' => 'Rua Exemplo',
+            'street_number' => '123 A',
+        ]
+     ]
+];
+
+$response = $omnipay->findOrCreateCustomer($data)->send();
+
+if ($response->isSuccessful()) {
+    return $response->getData();
+}
+
+return $response->getMessage();
+```
+
 ### Find Customer
 
 ```php
