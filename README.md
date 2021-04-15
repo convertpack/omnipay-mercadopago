@@ -140,14 +140,14 @@ if ($response->isSuccessful()) {
 return $response->getMessage();
 ```
 
-### Fetch Customer
+### Find Customer
 
 ```php
 $omnipay = Omnipay::create('MercadoPago');
 
 $omnipay->setAccessToken('{TOKEN}');
 
-$response = $omnipay->createCustomer(['email' => 'jhon@doe.com'])->send();
+$response = $omnipay->findCustomer(['email' => 'jhon@doe.com'])->send();
 
 if ($response->isSuccessful()) {
     return $response->getData();

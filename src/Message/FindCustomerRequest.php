@@ -5,7 +5,7 @@ namespace Omnipay\MercadoPago\Message;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 
-class FetchCustomerRequest extends AbstractRequest
+class FindCustomerRequest extends AbstractRequest
 {
     public function setEmail($value)
     {
@@ -19,7 +19,7 @@ class FetchCustomerRequest extends AbstractRequest
 
     public function getData()
     {
-        return $this->getEmail();
+        return ['email' => $this->getEmail()];
     }
     
     public function getHttpMethod(): string
@@ -29,7 +29,7 @@ class FetchCustomerRequest extends AbstractRequest
     
     protected function createResponse($req)
     {
-        return $this->response = new FetchCustomerResponse($this, $req);
+        return $this->response = new FindCustomerResponse($this, $req);
     }
     
     protected function getEndpoint()
