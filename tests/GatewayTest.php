@@ -69,8 +69,7 @@ class GatewayTest extends GatewayTestCase
     {
         $response = $this->gateway->findCustomer(['email' => 'jhon@doe.com'])->send();
         
-        $this->assertInstanceOf(FindCustomerResponse
-        ::class, $response);
+        $this->assertInstanceOf(FindCustomerResponse::class, $response);
         $this->assertTrue($response->isSuccessful());
     }
 
