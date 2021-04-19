@@ -102,8 +102,6 @@ class PurchaseRequest extends AbstractRequest
             $append, $data
         ]);
 
-        dd($data);
-
         return $data;
     }
 
