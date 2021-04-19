@@ -34,6 +34,7 @@ abstract class AbstractRequest extends MessageAbstractRequest
         }
 
         return $this->createResponse([
+            'sent' => $data,
             'data' => $content,
             'status_code' => $httpRequest->getStatusCode(),
             'is_success' => $isSuccess

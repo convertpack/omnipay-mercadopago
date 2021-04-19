@@ -15,6 +15,7 @@ class PurchaseResponse extends AbstractResponse
     {
         $content = $this->getData();
         $data = $content['data'];
+        $sent = $content['sent'];
         $transactionReference = (string) $data['id'];
         //$this->setTransactionReference($transactionReference);
 
@@ -24,7 +25,7 @@ class PurchaseResponse extends AbstractResponse
         $dateOfExpiration = Arr::get($data, 'date_of_expiration');
         $append = [];
 
-        $append['customer_id'] = Arr::get($data, 'payer.id');
+        $append['customer_id'] = Arr::get($sent, 'payer.id');
 
         /*
          * Boleto
@@ -61,7 +62,7 @@ class PurchaseResponse extends AbstractResponse
         else if ($paymentTypeId == 'credit_card') {
             // $append['card_id'] = null;
             // $append['card_last_four'] = null;
-            $append['card_id'] = Arr::get($data, 'card.id');
+            $append['card_id'] = Arr::get($sent, 'card.id');
         }
 
         // Net amount
