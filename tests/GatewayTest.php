@@ -20,8 +20,8 @@ class GatewayTest extends GatewayTestCase
         $this->gateway->setConfig(['access_token' => 'TEST-1542295155328669-032918-fcc8f2e291098c932751aa23cb2075e4-603862211', 'client_secret' => 'TEST-a18af9aa-b037-4ef9-922e-a9fec6101cb0']);
 
         $this->payer = [
-            'email' => 'jhon@doe.com',
-            'first_name' => 'Jhon',
+            'email' => 'John@doe.com',
+            'first_name' => 'John',
             'last_name' => 'Doe',
             'phone' => [
                 'ddi' => '55',
@@ -68,7 +68,7 @@ class GatewayTest extends GatewayTestCase
 
     public function testFindCustomer()
     {
-        $response = $this->gateway->findCustomer(['email' => 'jhon@doe.com'])->send();
+        $response = $this->gateway->findCustomer(['email' => 'John@doe.com'])->send();
         
         $this->assertInstanceOf(FindCustomerResponse::class, $response);
         $this->assertTrue($response->isSuccessful());

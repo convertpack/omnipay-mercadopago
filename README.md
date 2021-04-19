@@ -112,8 +112,8 @@ $omnipay->setAccessToken('{TOKEN}');
 
 $data = [
     'payer' => [
-        'email' => 'jhon@doe.com',
-        'first_name' => 'Jhon',
+        'email' => 'John@doe.com',
+        'first_name' => 'John',
         'last_name' => 'Doe',
         'phone' => [
             'ddi' => '55',
@@ -149,8 +149,8 @@ $omnipay->setAccessToken('{TOKEN}');
 
 $data = [
     'payer' => [
-        'email' => 'jhon@doe.com',
-        'first_name' => 'Jhon',
+        'email' => 'John@doe.com',
+        'first_name' => 'John',
         'last_name' => 'Doe',
         'phone' => [
             'ddi' => '55',
@@ -184,7 +184,7 @@ $omnipay = Omnipay::create('MercadoPago');
 
 $omnipay->setAccessToken('{TOKEN}');
 
-$response = $omnipay->findCustomer(['email' => 'jhon@doe.com'])->send();
+$response = $omnipay->findCustomer(['email' => 'John@doe.com'])->send();
 
 if ($response->isSuccessful()) {
     return $response->getData();
