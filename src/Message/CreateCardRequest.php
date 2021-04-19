@@ -2,6 +2,8 @@
 
 namespace Omnipay\MercadoPago\Message;
 
+use Illuminate\Support\Arr;
+
 class CreateCardRequest extends AbstractRequest
 {
     public function setCardToken($value)
@@ -14,36 +16,28 @@ class CreateCardRequest extends AbstractRequest
         return $this->getParameter('card_token');
     }
 
-    public function setPayerId($value)
-    {
-        return $this->setParameter('payer_id', $value);
-    }
-
-    public function getPayerId()
-    {
-        return $this->getParameter('payer_id');
-    }
-
     public function getData()
     {
         return [
-            'token' => $this->getCardToken()
+            'token' => $this->getCardToken(),
+            'payer' => Arr::get($this->getPayer(), 'id')
         ];
     }
-    
+
     public function getHttpMethod(): string
     {
         return 'POST';
     }
-    
+
     protected function createResponse($req)
     {
         return $this->response = new CreateCardResponse($this, $req);
     }
-    
+
     protected function getEndpoint()
     {
-        return $this->getTestMode() ? ($this->testEndpoint . "/customers/{$this->getPayerId()}/cards") : ($this->liveEndpoint . "/customers/{$this->getPayerId()}/cards");
+        $payerId = Arr::get($this->getPayer(), 'id');
+        return $this->getTestMode() ? ($this->testEndpoint . "/customers/{$payerId}/cards") : ($this->liveEndpoint . "/customers/{$payerId}/cards");
     }
-    
+
 }
