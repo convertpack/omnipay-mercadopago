@@ -34,15 +34,8 @@ class PurchaseRequest extends AbstractRequest
         $payer = $this->getPayerFormatted();
         $append['payer'] = $payer;
 
-        $gateway = new Gateway();
-        $gateway->setAccessToken($this->getAccessToken());
-
-        $responseCreateCustomer = $gateway->findOrCreateCustomer(['payer' => $append['payer']])->send();
-
-        if ($responseCreateCustomer->isSuccessful() && Arr::get($responseCreateCustomer->getData(), 'data.id')) {
-            $payer = Arr::get($responseCreateCustomer->getData(), 'data');
-            $append['payer'] = ['id' => Arr::get($responseCreateCustomer->getData(), 'data.id')];
-            $this->setPayer($append['payer']);
+        if ($payerId = Arr::get($append['payer'], 'id')) {
+            $append['payer'] = ['id' => $payerId];
         }
 
         /*
@@ -81,14 +74,9 @@ class PurchaseRequest extends AbstractRequest
             $paymentMethodId = $card['payment_method_id'];
             $append['token'] = $card['token'];
 
-            if (Arr::get($payer, 'id')) {
-                $responseCreateCard = $gateway->createCard(['card_token' => $append['token'], 'payer' => $payer])->send();
-
-                if ($responseCreateCard->isSuccessful() && $cardId = Arr::get($responseCreateCard->getData(), 'data.id')) {
-                    $append['card'] = ['id' => $cardId];
-                    unset($append['token']);
-                    $this->setCardId($cardId);
-                }
+            if ($cardId = Arr::get($this->getCard(), 'id')) {
+                $append['card'] = ['id' => $cardId];
+                unset($append['token']);
             }
 
             $issuerId = Arr::get($card, 'issuer_id');
@@ -114,17 +102,9 @@ class PurchaseRequest extends AbstractRequest
             $append, $data
         ]);
 
+        dd($data);
+
         return $data;
-    }
-
-    public function setCardId($value)
-    {
-        return $this->setParameter('card_id', $value);
-    }
-
-    public function getCardId()
-    {
-        return $this->getParameter('card_id');
     }
 
     public function getHttpMethod(): string
