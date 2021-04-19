@@ -14,6 +14,7 @@ abstract class AbstractRequest extends MessageAbstractRequest
     public function sendData($data)
     {
         $url = $this->getEndpoint().'?access_token=' . $this->getAccessToken();
+
         $httpRequest = $this->httpClient->request(
             $this->getHttpMethod(),
             $url,
@@ -161,19 +162,6 @@ abstract class AbstractRequest extends MessageAbstractRequest
     }
 
     /*
-     * User IP address
-     */
-    public function setIpAddress($value)
-    {
-        return $this->setParameter('ip_address', $value);
-    }
-
-    public function getIpAddress()
-    {
-        return $this->getParameter('ip_address');
-    }
-
-    /*
      * Mercado Pago access token (private key)
      */
     public function setAccessToken($value)
@@ -207,16 +195,15 @@ abstract class AbstractRequest extends MessageAbstractRequest
         $data = [
             "email" => Arr::get($payer, 'email', ''),
             "first_name" => Arr::get($payer, 'first_name', ''),
-            "last_name" => Arr::get($payer, 'last_name', ''),
-            "date_registered" => Carbon::now()
+            "last_name" => Arr::get($payer, 'last_name', '')
         ];
 
-        if ($phone = Arr::get($payer, 'phone')) {
-            $data["phone"] = [
-                "area_code" => Arr::get($phone, 'ddi', ''),
-                "number" => Arr::get($phone, 'number', '')
-            ];
-        }
+        // if ($phone = Arr::get($payer, 'phone')) {
+        //     $data["phone"] = [
+        //         "area_code" => Arr::get($phone, 'ddi', ''),
+        //         "number" => Arr::get($phone, 'number', '')
+        //     ];
+        // }
 
         if ($document = Arr::get($payer, 'document')) {
             $data["identification"] = $document;
@@ -229,7 +216,7 @@ abstract class AbstractRequest extends MessageAbstractRequest
                 "street_number" => Arr::get($address, 'street_number'),
             ];
         }
-        
+
         return $data;
     }
 
