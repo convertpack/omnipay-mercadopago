@@ -9,8 +9,10 @@ class FindCustomerResponse extends AbstractResponse
     public function getData()
     {
         $customers = Arr::get($this->data, 'results');
-        
-        $customer = Arr::first($customers, fn ($customerResult) => $customerResult === Arr::get($this->getRequest()->getParameters(), 'email'));
+
+        $searchEmail= Arr::get($this->getRequest()->getParameters(), 'email');
+
+        $customer = Arr::first($customers, fn ($customerResult) => $customerResult === $searchEmail);
 
         return $customer;
     }
