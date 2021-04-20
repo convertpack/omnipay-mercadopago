@@ -63,7 +63,7 @@ class PurchaseResponse extends AbstractResponse
             if ($card = Arr::get($sent, 'card')) {
                 $append['card'] = [
                     'id' => Arr::get($card, 'id'),
-                    'num_last_four' => Arr::get($card, 'last_four_digits'),
+                    'num_last_four' => Arr::get($data, 'card.last_four_digits'),
                     'brand' => Arr::get($sent, 'payment_method_id')
                 ];
             }
