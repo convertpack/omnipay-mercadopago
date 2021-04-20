@@ -7,37 +7,9 @@ class ValidateCredentialsRequest extends AbstractRequest
     protected $liveEndpoint = 'https://api.mercadopago.com/v1/';
     protected $testEndpoint = 'https://api.mercadopago.com/v1/';
 
-    /*
-     * We use `identification_types` route because
-     * it needs authentication, but doesn't return
-     * any sensitive information
-     */
-    public function sendData($data)
+    public function getHttpMethod(): string
     {
-        $url = $this->getEndpoint() . "identification_types?access_token=" . $this->getAccessToken();
-
-        $httpRequest = $this->httpClient->request(
-            'GET',
-            $url,
-            [
-                'Content-type' => 'application/json',
-                'Accept' => 'application/json'
-            ]
-        );
-
-        $content = json_decode($httpRequest->getBody()->getContents());
-
-        $isSuccess = true;
-
-        if (!in_array($httpRequest->getStatusCode(), [201, 200])) {
-            $isSuccess = false;
-        }
-
-        return $this->createResponse([
-            'data' => $content,
-            'status_code' => $httpRequest->getStatusCode(),
-            'is_success' => $isSuccess
-        ]);
+        return 'GET';
     }
 
     public function getData()
@@ -48,6 +20,16 @@ class ValidateCredentialsRequest extends AbstractRequest
     protected function createResponse($data)
     {
         return $this->response = new ValidateCredentialsResponse($this, $data);
+    }
+
+    /*
+     * We use `identification_types` route because
+     * it needs authentication, but doesn't return
+     * any sensitive information
+     */
+    protected function getEndpoint()
+    {
+        return $this->getTestMode() ? ($this->testEndpoint . '/identification_types') : ($this->liveEndpoint . '/identification_types');
     }
 
 }
