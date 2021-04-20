@@ -6,13 +6,22 @@ use Illuminate\Support\Arr;
 
 class FindCustomerResponse extends AbstractResponse
 {
+    public function isSuccessful()
+    {
+        return $this->data['is_success'];
+    }
+
     public function getData()
     {
-        $customers = Arr::get($this->data, 'results');
+        $customers = (array) Arr::get($this->data, 'data.results');
+
+        if (count($customers) == 0) {
+            return null;
+        }
 
         $searchEmail= Arr::get($this->getRequest()->getParameters(), 'email');
 
-        $customer = Arr::first($customers, fn ($customerResult) => $customerResult === $searchEmail);
+        $customer = Arr::first($customers, fn ($customerResult) => $customerResult['email'] === $searchEmail);
 
         return $customer;
     }

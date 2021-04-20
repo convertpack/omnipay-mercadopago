@@ -60,9 +60,13 @@ class PurchaseResponse extends AbstractResponse
          * Credit card
          */
         else if ($paymentTypeId == 'credit_card') {
-            // $append['card_id'] = null;
-            // $append['card_last_four'] = null;
-            $append['card_id'] = Arr::get($sent, 'card.id');
+            if ($card = Arr::get($sent, 'card')) {
+                $append['card'] = [
+                    'id' => Arr::get($card, 'id'),
+                    'num_last_four' => Arr::get($card, 'last_four_digits'),
+                    'brand' => Arr::get($sent, 'payment_method_id')
+                ];
+            }
         }
 
         // Net amount
