@@ -16,7 +16,7 @@ class FindOrCreateCustomerRequest extends AbstractRequest
 
         $responseFind = $gateway->findCustomer(['email' => $payer['email']])->send();
 
-        if ($responseFind->isSuccessful() && $responseFind->getData()) {
+        if ($responseFind->isSuccessful() || $responseFind->getStatusCode() === 429) {
             $this->response = $this->createResponse($responseFind->getData());
         } else {
             $responseCreate = $gateway->createCustomer(['payer' => $payer])->send();

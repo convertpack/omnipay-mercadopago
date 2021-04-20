@@ -16,7 +16,6 @@ class AbstractResponse extends BaseAbstractResponse
     /**
      * Returns error message
      *
-     * @var String $key
      * @return int
      */
     public function getMessage(): string
@@ -26,4 +25,13 @@ class AbstractResponse extends BaseAbstractResponse
         return $message;
     }
 
+    /**
+     * Returns status code request
+     *
+     * @return int
+     */
+    public function getStatusCode(): int
+    {
+        return (int) Arr::get($this->data, 'status_code', 0);
+    }
 }

@@ -16,7 +16,7 @@ class FindOrCreateCustomerResponse extends AbstractResponse
             $customer = Arr::first($results, fn ($customerResult) => $customerResult['email'] === $searchEmail);
         }
 
-        return ! is_null($customer);
+        return ! is_null($customer) && in_array($this->getStatusCode(), [200, 201]);
     }
 
     public function getData()
