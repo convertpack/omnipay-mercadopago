@@ -20,7 +20,7 @@ class CreateCardRequest extends AbstractRequest
     {
         return [
             'token' => $this->getCardToken(),
-            'payer' => Arr::get($this->getPayer(), 'id')
+            'payer' => Arr::get($this->getCustomer(), 'id')
         ];
     }
 
@@ -36,8 +36,8 @@ class CreateCardRequest extends AbstractRequest
 
     protected function getEndpoint()
     {
-        $payerId = Arr::get($this->getPayer(), 'id');
-        return $this->getTestMode() ? ($this->testEndpoint . "/customers/{$payerId}/cards") : ($this->liveEndpoint . "/customers/{$payerId}/cards");
+        $customerId = Arr::get($this->getCustomer(), 'id');
+        return $this->getTestMode() ? ($this->testEndpoint . "/customers/{$customerId}/cards") : ($this->liveEndpoint . "/customers/{$customerId}/cards");
     }
 
 }

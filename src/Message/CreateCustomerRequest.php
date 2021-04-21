@@ -9,7 +9,7 @@ class CreateCustomerRequest extends AbstractRequest
 {
     public function getData()
     {
-        return $this->getPayerFormatted();
+        return $this->getCustomerFormatted();
     }
     
     public function getHttpMethod(): string

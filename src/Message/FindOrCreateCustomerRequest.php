@@ -12,14 +12,14 @@ class FindOrCreateCustomerRequest extends AbstractRequest
     {
         $gateway = new Gateway;
         $gateway->setAccessToken($this->getAccessToken());
-        $payer = $this->getPayerFormatted();
+        $customer = $this->getCustomerFormatted();
 
-        $responseFind = $gateway->findCustomer(['email' => $payer['email']])->send();
+        $responseFind = $gateway->findCustomer(['email' => $customer['email']])->send();
 
         if ($responseFind->isSuccessful() || $responseFind->getStatusCode() === 429) {
             $this->response = $this->createResponse($responseFind->getData());
         } else {
-            $responseCreate = $gateway->createCustomer(['payer' => $payer])->send();
+            $responseCreate = $gateway->createCustomer(['customer' => $customer])->send();
 
             $this->response = $this->createResponse($responseCreate->getData());
         }

@@ -179,38 +179,38 @@ abstract class AbstractRequest extends MessageAbstractRequest
      * Payer data
      * https://www.mercadopago.com.br/developers/pt/reference/payments/_payments/post
      */
-    public function setPayer($value)
+    public function setCustomer($value)
     {
-        return $this->setParameter('payer', $value);
+        return $this->setParameter('customer', $value);
     }
 
-    public function getPayer()
+    public function getCustomer()
     {
-        return $this->getParameter('payer');
+        return $this->getParameter('customer');
     }
 
-    public function getPayerFormatted()
+    public function getCustomerFormatted()
     {
-        $payer = $this->getPayer();
+        $customer = $this->getCustomer();
 
         $data = [
-            "email" => Arr::get($payer, 'email', ''),
-            "first_name" => Arr::get($payer, 'first_name', ''),
-            "last_name" => Arr::get($payer, 'last_name', '')
+            "email" => Arr::get($customer, 'email', ''),
+            "first_name" => Arr::get($customer, 'first_name', ''),
+            "last_name" => Arr::get($customer, 'last_name', '')
         ];
 
-        // if ($phone = Arr::get($payer, 'phone')) {
+        // if ($phone = Arr::get($customer, 'phone')) {
         //     $data["phone"] = [
         //         "area_code" => Arr::get($phone, 'ddi', ''),
         //         "number" => Arr::get($phone, 'number', '')
         //     ];
         // }
 
-        if ($document = Arr::get($payer, 'document')) {
+        if ($document = Arr::get($customer, 'document')) {
             $data["identification"] = $document;
         }
 
-        if ($address = Arr::get($payer, 'address')) {
+        if ($address = Arr::get($customer, 'address')) {
             $data['address'] = [
                 "zip_code" => Arr::get($address, 'zip_code'),
                 "street_name" => Arr::get($address, 'street_name'),

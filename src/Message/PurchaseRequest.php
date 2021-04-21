@@ -31,11 +31,11 @@ class PurchaseRequest extends AbstractRequest
         $paymentMethodId = null;
         $issuerId = null;
 
-        $payer = $this->getPayerFormatted();
-        $append['payer'] = $payer;
+        $customer = $this->getCustomerFormatted();
+        $append['payer'] = $customer;
 
-        if ($payerId = Arr::get($append['payer'], 'id')) {
-            $append['payer'] = ['id' => $payerId];
+        if ($customerId = Arr::get($append['payer'], 'id')) {
+            $append['payer'] = ['id' => $customerId];
         }
 
         /*

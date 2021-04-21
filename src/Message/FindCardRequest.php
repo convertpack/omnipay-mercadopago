@@ -26,9 +26,9 @@ class FindCardRequest extends AbstractRequest
 
     protected function getEndpoint()
     {
-        $payerId = Arr::get($this->getPayer(), 'id');
+        $customerId = Arr::get($this->getCustomer(), 'id');
         $cardId = Arr::get($this->getCard(), 'id');
-        return $this->getTestMode() ? ($this->testEndpoint . "/customers/{$payerId}/cards/{$cardId}") : ($this->liveEndpoint . "/customers/{$payerId}/cards/{$cardId}");
+        return $this->getTestMode() ? ($this->testEndpoint . "/customers/{$customerId}/cards/{$cardId}") : ($this->liveEndpoint . "/customers/{$customerId}/cards/{$cardId}");
     }
 
 }

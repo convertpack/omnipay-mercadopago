@@ -25,7 +25,9 @@ class PurchaseResponse extends AbstractResponse
         $dateOfExpiration = Arr::get($data, 'date_of_expiration');
         $append = [];
 
-        $append['customer_id'] = Arr::get($sent, 'payer.id');
+        if ($customerId = Arr::get($sent, 'customer.id')) {
+            $append['customer'] = ['id' => $customerId];
+        }
 
         /*
          * Boleto
