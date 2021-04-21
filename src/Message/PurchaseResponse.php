@@ -24,10 +24,8 @@ class PurchaseResponse extends AbstractResponse
         $paymentMethodId = Arr::get($data, 'payment_method_id');
         $dateOfExpiration = Arr::get($data, 'date_of_expiration');
         $append = [];
-
-        if ($customerId = Arr::get($sent, 'customer.id')) {
-            $append['customer'] = ['id' => $customerId];
-        }
+        
+        $append['customer'] = Arr::get($sent, 'customer');
 
         /*
          * Boleto
@@ -42,8 +40,10 @@ class PurchaseResponse extends AbstractResponse
             $rawBarcode = Arr::get($data, 'barcode.content');
             $boletoUrl = Arr::get($data, 'transaction_details.external_resource_url');
 
-            $append['boleto_barcode'] = $this->convertItfBoleto($rawBarcode);
-            $append['boleto_url'] = $boletoUrl;
+            $append['boleto'] = [
+                'barcode' => $this->convertItfBoleto($rawBarcode),
+                'url' => $boletoUrl
+            ];
         }
         /*
          * Pix
@@ -54,21 +54,21 @@ class PurchaseResponse extends AbstractResponse
             $pixQrCodeBase64 = Arr::get($pixData, 'qr_code_base64');
             $pixCollectorName = Arr::get($pixData, 'bank_info.collector.account_holder_name');
 
-            $append['pix_code'] = $pixCode;
-            $append['pix_collector_name'] = $pixCollectorName;
+            $append['pix'] = [
+                'code' => $pixCode,
+                'collector_name' => $pixCollectorName
+            ];
             //$append['pix_qr_code_base64'] = $pixQrCodeBase64;
         }
         /*
          * Credit card
          */
         else if ($paymentTypeId == 'credit_card') {
-            if ($card = Arr::get($sent, 'card')) {
-                $append['card'] = [
-                    'id' => Arr::get($card, 'id'),
-                    'num_last_four' => Arr::get($data, 'card.last_four_digits'),
-                    'brand' => Arr::get($sent, 'payment_method_id')
-                ];
-            }
+            $append['card'] = [
+                'id' => Arr::get($sent, 'card.id'),
+                'num_last_four' => Arr::get($data, 'card.last_four_digits'),
+                'brand' => Arr::get($sent, 'payment_method_id')
+            ];
         }
 
         // Net amount
