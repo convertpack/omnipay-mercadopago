@@ -7,7 +7,6 @@ use Omnipay\Common\Message\AbstractResponse as BaseAbstractResponse;
 
 class AbstractResponse extends BaseAbstractResponse
 {
-
     protected $errors = [
         'cc_rejected_bad_filled_card_number' => 'gateway.credit_card.invalid_number',
         'cc_rejected_bad_filled_date' => 'gateway.credit_card.invalid_exp_date',
@@ -21,7 +20,7 @@ class AbstractResponse extends BaseAbstractResponse
         'cc_rejected_high_risk' => 'gateway.credit_card.rejected_by_fraud_prevention',
         'cc_rejected_insufficient_amount' => 'gateway.credit_card.insufficient_balance',
         'cc_rejected_invalid_installments' => 'gateway.credit_card.invalid_installments',
-        'cc_rejected_max_attemens' => 'gateway.credit_card.rate_limit',
+        'cc_rejected_max_attempts' => 'gateway.credit_card.rate_limit',
         'cc_rejected_other_reason' => 'gateway.credit_card.generic_error'
     ];
 
