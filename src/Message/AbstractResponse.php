@@ -9,20 +9,20 @@ class AbstractResponse extends BaseAbstractResponse
 {
 
     protected $errors = [
-        'cc_rejected_bad_filled_card_number' => 'gateway.credit_card.invalid_number',
-        'cc_rejected_bad_filled_date' => 'gateway.credit_card.invalid_exp_date',
-        'cc_rejected_bad_filled_other' => 'gateway.credit_card.invalid_data',
-        'cc_rejected_bad_filled_security_code' => 'gateway.credit_card.invalid_cvc',
-        'cc_rejected_blacklist' => 'gateway.credit_card.rejected_by_fraud_prevention',
-        'cc_rejected_call_for_authorize' => 'gateway.credit_card.rejected_by_bank',
-        'cc_rejected_card_disabled' => 'gateway.credit_card.card_disabled',
-        'cc_rejected_card_error' => 'gateway.credit_card.generic_error',
-        'cc_rejected_duplicated_payment' => 'gateway.credit_card.duplicated_charge',
-        'cc_rejected_high_risk' => 'gateway.credit_card.rejected_by_fraud_prevention',
-        'cc_rejected_insufficient_amount' => 'gateway.credit_card.insufficient_balance',
-        'cc_rejected_invalid_installments' => 'gateway.credit_card.invalid_installments',
-        'cc_rejected_max_attemens' => 'gateway.credit_card.rate_limit',
-        'cc_rejected_other_reason' => 'gateway.credit_card.generic_error'
+        'cc_rejected_bad_filled_card_number' => 'credit_card.invalid_number',
+        'cc_rejected_bad_filled_date' => 'credit_card.invalid_exp_date',
+        'cc_rejected_bad_filled_other' => 'credit_card.invalid_data',
+        'cc_rejected_bad_filled_security_code' => 'credit_card.invalid_cvc',
+        'cc_rejected_blacklist' => 'credit_card.rejected_by_fraud_prevention',
+        'cc_rejected_call_for_authorize' => 'credit_card.rejected_by_bank',
+        'cc_rejected_card_disabled' => 'credit_card.card_disabled',
+        'cc_rejected_card_error' => 'credit_card.generic_error',
+        'cc_rejected_duplicated_payment' => 'credit_card.duplicated_charge',
+        'cc_rejected_high_risk' => 'credit_card.rejected_by_fraud_prevention',
+        'cc_rejected_insufficient_amount' => 'credit_card.insufficient_balance',
+        'cc_rejected_invalid_installments' => 'credit_card.invalid_installments',
+        'cc_rejected_max_attemens' => 'credit_card.rate_limit',
+        'cc_rejected_other_reason' => 'credit_card.generic_error'
     ];
 
     public function isSuccessful()
@@ -55,7 +55,7 @@ class AbstractResponse extends BaseAbstractResponse
     public function getError(): array
     {
         $error = Arr::get($this->data, 'data.status_detail', '');
-        
+
         return [
             'code' => Arr::first($this->errors, fn ($errorItem, $key) => $key === $error),
             'raw' => $error
