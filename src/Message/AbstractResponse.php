@@ -21,7 +21,7 @@ class AbstractResponse extends BaseAbstractResponse
         'cc_rejected_high_risk' => 'credit_card.rejected_by_fraud_prevention',
         'cc_rejected_insufficient_amount' => 'credit_card.insufficient_balance',
         'cc_rejected_invalid_installments' => 'credit_card.invalid_installments',
-        'cc_rejected_max_attemens' => 'credit_card.rate_limit',
+        'cc_rejected_max_attempts' => 'credit_card.rate_limit',
         'cc_rejected_other_reason' => 'credit_card.generic_error'
     ];
 

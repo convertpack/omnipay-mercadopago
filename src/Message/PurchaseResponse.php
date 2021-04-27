@@ -16,7 +16,7 @@ class PurchaseResponse extends AbstractResponse
         $content = $this->getData();
         $data = $content['data'];
         $sent = $content['sent'];
-        $transactionReference = (string) $data['id'];
+        $transactionReference = (string) Arr::get($data, 'id');
         //$this->setTransactionReference($transactionReference);
 
         $totalAmount = Arr::get($data, 'transaction_details.total_paid_amount', null);
