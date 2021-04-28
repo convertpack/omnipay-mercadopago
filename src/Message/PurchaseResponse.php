@@ -141,7 +141,7 @@ class PurchaseResponse extends AbstractResponse
         return 0;
     }
 
-    public function getStatusTransaction()
+    public function getTransactionStatus()
     {
         $status = Arr::get($this->data, 'data.status');
 
