@@ -156,11 +156,7 @@ class PurchaseResponse extends AbstractResponse
 
     public function getTransactionStatus()
     {
-        $status = Arr::get($this->data, 'data.status');
-
-        $paymentStatus = Config::get('omnipay.mercado_pago.payment_status', []);
-
-        return Arr::get($paymentStatus, $status, $status);
+        return Arr::get($this->data, 'data.status');
     }
 
     /*
