@@ -54,7 +54,7 @@ class AbstractResponse extends BaseAbstractResponse
 
     public function getStatusDetail(): array
     {
-        $message = Arr::get($this->data, 'data.status_detail', '');
+        $message = Arr::get($this->data, 'data.status_detail', null);
         $mappedCode = Arr::first($this->errors, fn ($errorItem, $key) => $key === $message, 'unknown');
 
         return [
