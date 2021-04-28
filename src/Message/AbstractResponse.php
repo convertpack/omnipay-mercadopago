@@ -52,13 +52,14 @@ class AbstractResponse extends BaseAbstractResponse
         return (int) Arr::get($this->data, 'status_code', 0);
     }
 
-    public function getError(): array
+    public function getStatusDetail(): array
     {
-        $error = Arr::get($this->data, 'data.status_detail', '');
+        $message = Arr::get($this->data, 'data.status_detail', '');
+        $mappedCode = Arr::first($this->errors, fn ($errorItem, $key) => $key === $message, 'unknown');
 
         return [
-            'code' => Arr::first($this->errors, fn ($errorItem, $key) => $key === $error),
-            'raw' => $error
+            'code' => $mappedCode,
+            'raw' => $message,
         ];
     }
 }
